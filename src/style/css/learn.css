@@ -18,7 +18,7 @@
   line-height: 120px;
 }
 #layout-main{
-    height: 100vh;
+    height: calc(100vh - 48px);
 }
 #layout-code{
     width: 10%;
@@ -26,4 +26,11 @@
 #aceeditorContainer{
     height: 100% !important;
     width: 100% !important;
+    position: absolute;
+}
+#testInfo{
+    position: absolute;
+    bottom:0px;
+    left: 0px;
+    right: 0px;
 }
