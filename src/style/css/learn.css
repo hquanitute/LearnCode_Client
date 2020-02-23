@@ -1,21 +1,23 @@
 .ant-layout-header,
 .ant-layout-footer {
-  background: #7dbcea;
-  color: #fff;
+  background: #F5F6F7;
+  color: #000;
+  font-family: Roboto, sans-serif;
 }
 .ant-layout-footer {
   line-height: 1.5;
 }
 .ant-layout-sider {
-  background: #3ba0e9;
-  color: #fff;
+  background: #F9F9F9;
+  color: #5D5D5D;
   line-height: 120px;
+  
 }
 .ant-layout-content {
-  background: rgba(16, 142, 233, 1);
-  color: #fff;
+  background:#F5F6F7;
   min-height: 120px;
-  line-height: 120px;
+  font-size: 18px;
+  text-align: left;
 }
 #layout-main{
     height: calc(100vh - 48px);
@@ -33,4 +35,23 @@
     bottom:0px;
     left: 0px;
     right: 0px;
+    text-align:left ;
+    z-index: 10;
+    padding: 5px;
+}
+.ace_gutter-layer{
+    position: relative;
+    z-index: 0;
+}
+
+code {
+    background-color: #D0D0D5;
+    color: #2A2A40;
+    font-family: Roboto Mono,monospace;
+}
+#layout-content{
+  background-color:#F5F6F7;
+}
+#title{
+  font-size: 22.5px;
 }

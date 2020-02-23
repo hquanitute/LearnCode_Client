@@ -1,6 +1,6 @@
-#search{
-    left: 0;
+#search-input{
+    margin: 3px;
 }
-Menu{
-    height: 48px;
+.rightNav{
+    font-size: 20px;
 }
