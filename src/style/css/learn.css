@@ -10,7 +10,6 @@
 .ant-layout-sider {
   background: #F9F9F9;
   color: #5D5D5D;
-  line-height: 120px;
   
 }
 .ant-layout-content {
@@ -54,4 +53,16 @@ code {
 }
 #title{
   font-size: 22.5px;
+}
+pre{
+  background-color:#fff;
+  padding: 10px;
+  margin: 10px;
+
+}
+pre > code{
+  background-color:#fff;
+}
+hr{
+  border-top-width: 3px;
 }

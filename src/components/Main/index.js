@@ -4,32 +4,32 @@ import { Link, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Row, Col } from 'antd';
 import { Input } from 'antd';
 import '../../style/css/navbar.css';
-const { Search } = Input;
 
+const { Search } = Input;
 function Main(props) {
     return (
         <div>
             <Router>
-                <div>
+                <div className="content-center">
                     <nav>
-                        <Row>
+                        <Row className="p-0 font-bold bg-blue-700">
                             <Col span={6}>
-                                <Search id="search-input" placeholder="input search text" onSearch={value => console.log(value)} enterButton />
+                                <Search className="m-0 textGrey" id="search-input" placeholder="Input course you want to learn" onSearch={value => console.log(value)}  />
                             </Col>
                             {/* Offset: grid=24 grid-6:for search. offset = ((24/2-6)-(span))/2= 5 */}
                             <Col span={2} offset={5}> 
-                                <Link to="/">
+                                <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
                                     LearnCodeClient
                                 </Link>
                             </Col>
-                            <Col span={1} offset={7}>
-                                <Link className="rightNav" to="/new">/new</Link>
+                            <Col className="my-2" span={1} offset={7}>
+                                <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/new">new</Link>
                             </Col>
-                            <Col span={1} offset={0}>
-                                <Link className="rightNav" to="/forum">/forum</Link>
+                            <Col className="my-2" span={1} offset={0}>
+                                <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/tailwind">forum</Link>
                             </Col>
-                            <Col span={1} offset={0}>
-                                <Link className="rightNav" to="/learn">/learn</Link>
+                            <Col className="my-2" span={1} offset={0}>
+                                <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn">learn</Link>
                             </Col>
                         </Row>
                     </nav>
@@ -37,10 +37,9 @@ function Main(props) {
                         <Route exat path="/learn">
                             <LearnPage />
                         </Route>
-                        {/* <Route path="/users">
-                            <Users />
+                        <Route path="/tailwind">
                         </Route>
-                        <Route path="/">
+                        {/* <Route path="/">
                             <Home />
                         </Route> */}
                     </Switch>
