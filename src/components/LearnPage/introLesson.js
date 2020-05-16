@@ -6,7 +6,7 @@ import {
     Link,
     useParams
   } from "react-router-dom";
-function Test2(props) {
+function IntroLesson(props) {
     let { topic,lesson } = useParams();
     return (
         <div>
@@ -16,4 +16,4 @@ function Test2(props) {
     );
 }
 
-export default Test2;
+export default IntroLesson;
