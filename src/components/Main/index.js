@@ -13,7 +13,7 @@ function Main(props) {
         props.getCourses();
     },[])
     useEffect(() => {
-        console.log("Helllllo");
+        // console.log("Helllllo");
         
     },[props.challengeSelected])
     // let { path, url } = useRouteMatch();
