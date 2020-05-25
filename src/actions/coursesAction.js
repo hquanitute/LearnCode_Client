@@ -32,7 +32,7 @@ export function resetCourseSelectedAction(){
 }
 
 export function getUpdateCourseAction(){
-    const request = callApiAsPromise("GET", apiBaseUrl+"courses/", null, null)
+    const request = callApiAsPromise("GET", apiBaseUrl+"courses/getPublished", null, null)
     console.log(apiBaseUrl);
     
     return dispatch =>

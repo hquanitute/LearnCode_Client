@@ -28,15 +28,32 @@ function Challenge(props) {
     let { challengeId } = useParams();
     const [code, setCode] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [listChallengeIds, setListChallengeIds] = useState([]);
+
     useEffect(() => {
         props.setChallengeSelected(challengeId)
-
-
     }, [])
     useEffect(() => {
         setCode(props.challengeSelected.contents)
     }, [props.challengeSelected])
-    console.log(code);
+
+    useEffect(() => {
+        initListChallengeIds();
+    }, [props.courses])
+
+    const initListChallengeIds = () => {
+        (props.courses || []).map(course => {
+            (course.lessons || []).map(lesson => {
+                (lesson.challenges || []).map(challenge => {
+                    if (challenge._id === challengeId)
+                        lesson.challenges.map(challengeInRight => {
+                            setListChallengeIds(previous => [...previous, challengeInRight._id])
+                        })
+                    return;
+                })
+            })
+        })
+    }
 
     const onChangeCode = (newValue) => {
         setCode(newValue)
@@ -45,10 +62,17 @@ function Challenge(props) {
         setModalVisible(true)
     }
     const goToNextChallenge = e => {
+        props.setChallengeSelected(listChallengeIds[listChallengeIds.indexOf(challengeId) + 1])
         setModalVisible(false)
     };
 
     const downloadCode = e => {
+        const element = document.createElement("a");
+        const file = new Blob([code], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = props.challengeSelected.title+'.txt';
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
         setModalVisible(false)
     };
     const submitCode = () => {
@@ -60,7 +84,7 @@ function Challenge(props) {
             },
             "testCase": [
                 {
-                    "code": "assert(typeof convertToF(1) === 'number')",
+                    "code": "assert(typeof 1 === 'number')",
                     "descrition": "convertToF(5) === 45",
                 }
             ]
@@ -77,7 +101,7 @@ function Challenge(props) {
         })
     }
     const resetCode = () => {
-        console.log("quan2");
+        setCode(props.challengeSelected.contents)
     }
     const goToForum = () => {
         console.log("quan3");
@@ -147,14 +171,25 @@ function Challenge(props) {
                 visible={modalVisible}
                 // onOk={handleSubmit}
                 // onCancel={handleCancel}
-                footer={[
-                    <Button key="next" onClick={() => goToNextChallenge()}>
-                        Go to next challenge
-                    </Button>,
-                    <Button key="Download" type="primary" onClick={() => downloadCode()}>
-                        Download code
-                    </Button>
-                ]}
+                footer={
+                    listChallengeIds.indexOf(challengeId) < listChallengeIds.length - 1 ?
+                        [
+                            <Link key="next" to={`/learn/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]} onClick={() => goToNextChallenge()}>
+                                Go to next challenge
+                            </Link>,
+                            <Button key="Download" type="primary" onClick={() => downloadCode()}>
+                                Download code
+                            </Button>
+                        ] :
+                        [
+                            <Link key="next" to={`/learn/`}>
+                                Go back learning page
+                            </Link>,
+                            <Button key="Download" type="primary" onClick={() => downloadCode()}>
+                                Download code
+                            </Button>
+                        ]
+                }
             >
                 <p>{props.challengeSelected.title}</p>
 
@@ -165,6 +200,7 @@ function Challenge(props) {
 const mapStateToProps = (state, ownProps) => {
     return {
         challengeSelected: state.challengeSelected,
+        courses: state.courses
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
