@@ -29,6 +29,7 @@ function Challenge(props) {
     const [code, setCode] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [listChallengeIds, setListChallengeIds] = useState([]);
+    const [testInfo, setTestInfo] = useState("//Test will shown here");
 
     useEffect(() => {
         props.setChallengeSelected(challengeId)
@@ -70,38 +71,41 @@ function Challenge(props) {
         const element = document.createElement("a");
         const file = new Blob([code], { type: 'text/plain' });
         element.href = URL.createObjectURL(file);
-        element.download = props.challengeSelected.title+'.txt';
+        element.download = props.challengeSelected.title + '.txt';
         document.body.appendChild(element); // Required for this to work in FireFox
         element.click();
         setModalVisible(false)
     };
     const submitCode = () => {
+        let language = "";
+        if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
+            language = "NodejsTest"
+        } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
+            language = "Java"
+        }
+
         let data = {
             "codeSubmit": {
-                "code": code,
-                "isRunOnlyCode": false,
-                "language": "Nodejs"
+                "code": props.challengeSelected.tests + " " + code
             },
-            "testCase": [
-                {
-                    "code": "assert(typeof 1 === 'number')",
-                    "descrition": "convertToF(5) === 45",
-                }
-            ]
+            "language": language,
+            "test": {
+                "code": "string"
+            }
         }
-        console.log(data);
 
         callApiAsPromise("post", "http://104.248.148.136:8080/itcodeweb-0.0.1-SNAPSHOT/code", null, JSON.stringify(data)).then((response) => {
-            // alert("alo")
-            console.log(response.data);
-            if (response.data.status === 'SUCCESS') {
+            if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage) {
+                setTestInfo(response.data.successMessage.successComplieMessage)
                 showModal()
+            } else {
+                setTestInfo(response.data.errorMessage.errorComplieMessage)
             }
-
         })
     }
     const resetCode = () => {
         setCode(props.challengeSelected.contents)
+        setTestInfo("//Test will shown here")
     }
     const goToForum = () => {
         console.log("quan3");
@@ -117,11 +121,9 @@ function Challenge(props) {
                                 <ReactMarkdown source={props.challengeSelected.description} escapeHtml={false} />
                             </Content>
                             {/* <br/> */}
-                            <hr />
-                            <br />
-                            <Content>
-                                <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false} />
-                            </Content>
+                            {props.challengeSelected.instructions == "" ? "": <hr/>}
+                                <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false} 
+                                    visible = {props.challengeSelected.instructions == "" ? false : true}/>
                             {/* <br/> */}
                             <hr />
                             <br />
@@ -142,27 +144,36 @@ function Challenge(props) {
                         </Layout>
                     </ReflexElement>
                     <ReflexSplitter />
-
                     <ReflexElement className="right-pane">
-                        <Layout id="layout-code">
-                            <AceEditor
-                                mode="javascript"
-                                theme="terminal"
-                                name="aceeditorContainer"
-                                onChange={onChangeCode}
-                                fontSize={16}
-                                showPrintMargin={true}
-                                showGutter={true}
-                                highlightActiveLine={true}
-                                value={code || ""}
-                                setOptions={{
-                                    enableBasicAutocompletion: true,
-                                    enableLiveAutocompletion: true,
-                                    showLineNumbers: true,
-                                    tabSize: 4,
-                                }} />
-                            <Content id="testInfo">Test pass or fail</Content>
-                        </Layout>
+                        <ReflexContainer orientation="horizontal">
+                            {/* <Layout id="layout-code"> */}
+                            <ReflexElement className="top-pannel" propagateDimensionsRate={200}
+                                propagateDimensions={true}
+                                flex={0.8}>
+                                <AceEditor
+                                    mode="javascript"
+                                    theme="terminal"
+                                    name="aceeditorContainer"
+                                    onChange={onChangeCode}
+                                    fontSize={16}
+                                    showPrintMargin={true}
+                                    showGutter={true}
+                                    highlightActiveLine={true}
+                                    value={code || ""}
+                                    setOptions={{
+                                        enableBasicAutocompletion: true,
+                                        enableLiveAutocompletion: true,
+                                        showLineNumbers: true,
+                                        tabSize: 4,
+                                    }} />
+                            </ReflexElement>
+                            <ReflexSplitter propagate={true} />
+                            <ReflexElement className="bottom-pane overflow-y-scroll test-area">
+                                <ReactMarkdown source={testInfo} escapeHtml={false} />
+                            </ReflexElement>
+                            {/* </Layout> */}
+
+                        </ReflexContainer>
                     </ReflexElement>
                 </ReflexContainer>
             </Layout>
@@ -170,7 +181,8 @@ function Challenge(props) {
                 title="Passed the Test"
                 visible={modalVisible}
                 // onOk={handleSubmit}
-                // onCancel={handleCancel}
+                onCancel={() => setModalVisible(false)}
+                // closable = {false}
                 footer={
                     listChallengeIds.indexOf(challengeId) < listChallengeIds.length - 1 ?
                         [
