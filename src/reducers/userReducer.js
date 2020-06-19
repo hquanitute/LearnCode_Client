@@ -1,12 +1,21 @@
+import { apiBaseUrl, callApiAsPromise } from '../api';
+
 var jwt = require('jsonwebtoken');
 
 let initlesson = {};
-if(localStorage.getItem('jwt')){
-    jwt.verify(localStorage.getItem('jwt'), process.env.REACT_APP_CLIENT_SECRET , function (err, decoded) {
-        if (!err) {
-            initlesson = decoded;
-        }
-    });
+if (localStorage.getItem('jwt')) {
+    if(localStorage.getItem('updatedUser')){
+        initlesson = JSON.parse(localStorage.getItem('updatedUser'));
+        console.log(initlesson);
+        
+    } else {
+        jwt.verify(localStorage.getItem('jwt'), process.env.REACT_APP_CLIENT_SECRET, function (err, decoded) {
+            if (!err) {
+                initlesson = decoded;
+            }
+        });
+    }
+    
 }
 
 const userReducer = (state = initlesson, action) => {
@@ -17,6 +26,9 @@ const userReducer = (state = initlesson, action) => {
                     state = decoded;
                 }
             });
+            break;
+        case "UPDATE_USER":
+            state = action.data;
             break;
         default:
             break;

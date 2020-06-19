@@ -7,6 +7,7 @@ import { Input } from 'antd';
 import '../../style/css/navbar.css';
 import { connect } from 'react-redux';
 import Challenge from '../LearnPage/challenge';
+import UserProfile from '../User'
 import { getUpdateCourseAction } from '../../actions/coursesAction';
 import VerifyLogin from '../Login/verifyLogin';
 const { Search } = Input;
@@ -31,7 +32,7 @@ function Main(props) {
                                 </Link>
                             </Col>
                             <Col className="my-2" span={3} offset={4}>
-    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/new">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
+    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
                             </Col>
                             <Col className="my-2" span={1} offset={1}>
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
@@ -46,6 +47,9 @@ function Main(props) {
                         <Route exact path="/learn" children={<LearnPage />} />
                         {/* <Route path={`/learn/:topic/:lesson/`} children={<IntroLesson />} /> */}
                         <Route path={`/learn/:challengeId`} children={<Challenge />} />
+                        <Route path="/user">
+                           <UserProfile />
+                        </Route>
                         {/* <Route path="/">
                             <Home />
                         </Route> */}

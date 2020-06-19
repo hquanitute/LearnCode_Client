@@ -4,3 +4,10 @@ export function setUserByTokenAction(token){
         data: token
     }
 }
+
+export function updateUser(user){
+    return {
+        type: "UPDATE_USER",
+        data: user
+    }
+}
