@@ -3,18 +3,18 @@ import { createLogger } from "redux-logger";
 import thunk from "redux-thunk";
 
 import coursesReducer from './../reducers/coursesReducer';
-import lessonsReducer from './../reducers/lessonsReducer';
-import challengesReducer from './../reducers/challengesReducer';
-import courseSelectedReducer from "../reducers/courseSelectedReducer";
 import challengeSelectedReducer from "../reducers/challengeSelectedReducer";
+import userReducer from "../reducers/userReducer";
+import forumReducer from "../reducers/forumReducer";
+import topicReducer from "../reducers/topic.Reducer";
 
 export default createStore(
     combineReducers({
         courses:coursesReducer,
-        // lessons:lessonsReducer,
-        // challenges:challengesReducer,
-        // courseSelected:courseSelectedReducer,
         challengeSelected:challengeSelectedReducer,
+        userInfo: userReducer,
+        forum:forumReducer,
+        topic:topicReducer,
     }),
     {},
     applyMiddleware(createLogger(),thunk)

@@ -4,6 +4,8 @@ const lessonsReducer = (state = initlesson, action) => {
         case "GET_LESSONS":
             state = action.data
             break;
+        default:
+            break;
     }
     return state;
 }
