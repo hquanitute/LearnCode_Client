@@ -1,5 +1,3 @@
-import { apiBaseUrl, callApiAsPromise } from '../api';
-
 var jwt = require('jsonwebtoken');
 
 let initlesson = {};

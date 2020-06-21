@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import queryString from "query-string";
 import { useLocation, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { setUserByTokenAction } from '../../actions/userAction';

@@ -10,6 +10,7 @@ import Challenge from '../LearnPage/challenge';
 import UserProfile from '../User'
 import { getUpdateCourseAction } from '../../actions/coursesAction';
 import VerifyLogin from '../Login/verifyLogin';
+import Forum from '../Forum';
 const { Search } = Input;
 function Main(props) {
     useEffect(() => {
@@ -17,9 +18,9 @@ function Main(props) {
     }, [])
 
     const mainLogedIn = (
-        <div>
+        <div className=''>
             <Router>
-                <div className="content-center">
+                <div className="content-center min-h-screen">
                     <nav>
                         <Row className="p-0 font-bold bg-gray-900">
                             <Col span={6}>
@@ -32,7 +33,7 @@ function Main(props) {
                                 </Link>
                             </Col>
                             <Col className="my-2" span={3} offset={4}>
-    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
+                                <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
                             </Col>
                             <Col className="my-2" span={1} offset={1}>
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
@@ -48,7 +49,10 @@ function Main(props) {
                         {/* <Route path={`/learn/:topic/:lesson/`} children={<IntroLesson />} /> */}
                         <Route path={`/learn/:challengeId`} children={<Challenge />} />
                         <Route path="/user">
-                           <UserProfile />
+                            <UserProfile />
+                        </Route>
+                        <Route path="/forum">
+                            <Forum />
                         </Route>
                         {/* <Route path="/">
                             <Home />
@@ -71,7 +75,7 @@ function Main(props) {
                                 </Link>
                             </Col>
                             <Col className="" span={1} offset={5}>
-                                <a className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" 
+                                <a className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2"
                                     href='http://localhost:5000/auth/google'>Login</a>
                             </Col>
                             <Col className="my-2" span={1} offset={1}>
@@ -103,7 +107,7 @@ function Main(props) {
 const mapStateToProps = (state, ownProps) => {
     return {
         challengeSelected: state.challengeSelected,
-        userInfo : state.userInfo
+        userInfo: state.userInfo
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {

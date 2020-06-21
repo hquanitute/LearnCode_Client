@@ -22,7 +22,7 @@ import marked from 'marked'
 import { setChallengeSelectedAction } from '../../actions/challengesAction';
 import { callApiAsPromise } from '../../api';
 const ReactMarkdown = require('react-markdown')
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 function Challenge(props) {
     let { challengeId } = useParams();
@@ -93,13 +93,18 @@ function Challenge(props) {
                 "code": "string"
             }
         }
+        console.log(data);
 
         callApiAsPromise("post", "http://104.248.148.136:8080/itcodeweb-0.0.1-SNAPSHOT/code", null, JSON.stringify(data)).then((response) => {
+            console.log(response.data);
+
             if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage) {
                 setTestInfo(response.data.successMessage.successComplieMessage)
                 showModal()
             } else {
-                setTestInfo(response.data.errorMessage.errorComplieMessage)
+                setTestInfo(response.data.successMessage.successComplieMessage +
+                    '<br/> <br/>' +
+                    response.data.errorMessage.errorComplieMessage)
             }
         })
     }
@@ -121,9 +126,9 @@ function Challenge(props) {
                                 <ReactMarkdown source={props.challengeSelected.description} escapeHtml={false} />
                             </Content>
                             {/* <br/> */}
-                            {props.challengeSelected.instructions == "" ? "": <hr/>}
-                                <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false} 
-                                    visible = {props.challengeSelected.instructions == "" ? false : true}/>
+                            {props.challengeSelected.instructions == "" ? "" : <hr />}
+                            <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false}
+                                visible={props.challengeSelected.instructions == "" ? false : true} />
                             {/* <br/> */}
                             <hr />
                             <br />
