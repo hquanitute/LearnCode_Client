@@ -59,6 +59,7 @@ function Forum(props) {
                 {listTopics}
             </div>
             <Modal
+                className='modal-new-topic'
                 title="Create new topic"
                 visible={modalVisible}
                 // onOk={handleSubmit}
