@@ -11,6 +11,7 @@ import UserProfile from '../User'
 import { getUpdateCourseAction } from '../../actions/coursesAction';
 import VerifyLogin from '../Login/verifyLogin';
 import Forum from '../Forum';
+import Topic from '../Forum/topic';
 const { Search } = Input;
 function Main(props) {
     useEffect(() => {
@@ -51,9 +52,10 @@ function Main(props) {
                         <Route path="/user">
                             <UserProfile />
                         </Route>
-                        <Route path="/forum">
+                        <Route exact path="/forum">
                             <Forum />
                         </Route>
+                        <Route path={`/forum/:topicId`} children={<Topic />} />
                         {/* <Route path="/">
                             <Home />
                         </Route> */}
