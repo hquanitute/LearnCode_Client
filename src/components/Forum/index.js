@@ -95,7 +95,7 @@ function Forum(props) {
     );
 
     return (
-        <div className="bg-blue-800 min-h-screen">
+        <div className="bg-blue-800 forum-bg">
             <div className="pt-2">
                 <button className='bg-red-500 hover:bg-red-700 text-white text-2xl font-bold py-2 px-4'
                     onClick={() => { chooseCategory('') }}> All topics</button>

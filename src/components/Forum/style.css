@@ -8,7 +8,8 @@
 }
 
 .markdown-block-area {
-    max-height : 330px;
+    /* max-height : 330px; */
+    min-height: 120px;
 }
 .previous {
     max-height : 330px;
@@ -37,4 +38,17 @@ h5{
 h6{
     font-size: .67em;
     font-weight: bolder;
+}
+hr{
+    border-width: 0.3px !important;
+}
+.topic-bg{
+    background-color: #313146;
+    min-height: 93vh !important;
+}
+.topic-question-bg{
+    background-color: #1e1e2c;
+}
+.forum-bg{
+    min-height: 93vh !important;
 }
