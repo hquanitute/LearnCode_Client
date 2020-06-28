@@ -3,9 +3,7 @@ var jwt = require('jsonwebtoken');
 let initlesson = {};
 if (localStorage.getItem('jwt')) {
     if(localStorage.getItem('updatedUser')){
-        initlesson = JSON.parse(localStorage.getItem('updatedUser'));
-        console.log(initlesson);
-        
+        initlesson = JSON.parse(localStorage.getItem('updatedUser'));        
     } else {
         jwt.verify(localStorage.getItem('jwt'), process.env.REACT_APP_CLIENT_SECRET, function (err, decoded) {
             if (!err) {

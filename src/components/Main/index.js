@@ -12,7 +12,8 @@ import { getUpdateCourseAction } from '../../actions/coursesAction';
 import VerifyLogin from '../Login/verifyLogin';
 import Forum from '../Forum';
 import Topic from '../Forum/topic';
-const { Search } = Input;
+import Home from '../Home';
+
 function Main(props) {
     useEffect(() => {
         props.getCourses();
@@ -24,11 +25,11 @@ function Main(props) {
                 <div className="content-center min-h-screen">
                     <nav>
                         <Row className="p-0 font-bold bg-gray-900">
-                            <Col span={6}>
+                            {/* <Col span={6}>
                                 <Search className="m-0 textGrey" id="search-input" placeholder="Input course you want to learn" onSearch={value => console.log(value)} />
-                            </Col>
+                            </Col> */}
                             {/* Offset: grid=24 grid-6:for search. offset = ((24/2-6)-(span))/2= 5 */}
-                            <Col span={2} offset={4}>
+                            <Col span={2} offset={9}>
                                 <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
                                     LearnCodeClient
                                 </Link>
@@ -46,19 +47,18 @@ function Main(props) {
                     </nav>
                     {/* <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn/top1/ba1/da">topic111</Link> */}
                     <Switch>
+                        <Route exact path="/" children={<Home />} />
                         <Route exact path="/learn" children={<LearnPage />} />
                         {/* <Route path={`/learn/:topic/:lesson/`} children={<IntroLesson />} /> */}
                         <Route path={`/learn/:challengeId`} children={<Challenge />} />
+                        <Route exact path="/forum" children={<Forum />} />
+                        <Route path={`/forum/:topicId`} children={<Topic />} />
                         <Route path="/user">
                             <UserProfile />
                         </Route>
-                        <Route exact path="/forum">
-                            <Forum />
-                        </Route>
-                        <Route path={`/forum/:topicId`} children={<Topic />} />
-                        {/* <Route path="/">
+                        <Route path="*">
                             <Home />
-                        </Route> */}
+                        </Route>
                     </Switch>
                 </div>
             </Router>
@@ -69,32 +69,38 @@ function Main(props) {
             <Router>
                 <div className="content-center">
                     <nav>
-                        <Row className="p-0 font-bold bg-gray-900">
+                        <div className="p-0 font-bold bg-gray-900 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8">
                             {/* Offset: grid=24 grid-6:for search. offset = ((24/2-6)-(span))/2= 5 */}
-                            <Col span={2} offset={10}>
+                            <div className="lg:col-start-4">
                                 <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
                                     LearnCodeClient
                                 </Link>
-                            </Col>
-                            <Col className="" span={1} offset={5}>
+                            </div>
+                            {/* <div className="col-start-6" span={1} offset={5}>
                                 <a className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2"
                                     href='http://localhost:5000/auth/google'>Login</a>
-                            </Col>
-                            <Col className="my-2" span={1} offset={1}>
+                            </div> */}
+                            <div className="my-2 md:col-start-5 lg:col-start-7" span={1} offset={1}>
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
-                            </Col>
-                            <Col className="my-2" span={1} offset={1}>
+                            </div>
+                            <div className="my-2" span={1} offset={1}>
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/learn">Learn</Link>
-                            </Col>
-                        </Row>
+                            </div>
+                        </div>
                     </nav>
                     {/* <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn/top1/ba1/da">topic111</Link> */}
                     <Switch>
+                        <Route exact path="/" children={<Home />} />
                         <Route exact path="/learn" children={<LearnPage />} />
                         {/* <Route path={`/learn/:topic/:lesson/`} children={<IntroLesson />} /> */}
                         <Route path={`/learn/:challengeId`} children={<Challenge />} />
+                        <Route exact path="/forum" children={<Forum />} />
+                        <Route path={`/forum/:topicId`} children={<Topic />} />
                         <Route path="/verifyLogin">
                             <VerifyLogin />
+                        </Route>
+                        <Route path="*">
+                            <Home />
                         </Route>
                     </Switch>
                 </div>

@@ -32,13 +32,18 @@ function Forum(props) {
     };
 
     const createTopic = () => {
-        if( title ===''){
+        if (!props.user.id) {
+            message.error('Sign in to create new topic');
+        } else if (title === '') {
             message.error('Title is required');
         }
-        else if( title.split(' ').length < 4){
+        else if (title.split(' ').length < 4) {
             message.error('Title must > 3 words');
         }
-        else if( contentNewTopic.split(' ').length < 4){
+        else if (challengeId === '' && tags === 'challenge') {
+            message.error('Please input challenge id if you selected tag challenge')
+        }
+        else if (contentNewTopic.split(' ').length < 4) {
             message.error('Content must > 3 words');
         }
         else {
@@ -53,8 +58,8 @@ function Forum(props) {
             callApiAsPromise('post', apiBaseUrl + 'topics', null, JSON.stringify(data)).then(res => {
                 message.info('Create new topic successfully');
                 setModalVisible(false);
-            }).catch(err =>{
-                message.error('FAILED')
+            }).catch((err) => {
+                message.error('Create topic failed!')
             })
         }
     }
@@ -99,8 +104,10 @@ function Forum(props) {
             <div className="pt-2">
                 <button className='bg-red-500 hover:bg-red-700 text-white text-2xl font-bold py-2 px-4'
                     onClick={() => { chooseCategory('') }}> All topics</button>
+                <button className='bg-indigo-500 hover:bg-indigo-700 text-white text-2xl font-bold py-2 px-4'
+                    onClick={() => { chooseCategory('general') }}> General</button>
                 <button className='bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-2 px-4'
-                    onClick={() => { chooseCategory('challenges') }}> Challenges</button>
+                    onClick={() => { chooseCategory('challenge') }}> Challenges</button>
                 <button className='bg-yellow-500 hover:bg-yellow-700 text-white text-2xl font-bold py-2 px-4'
                     onClick={() => { chooseCategory('javascript') }}> JavaScript</button>
                 <button className='bg-orange-500 hover:bg-orange-700 text-white text-2xl font-bold py-2 px-4'
@@ -123,7 +130,7 @@ function Forum(props) {
                 // closable = {false}
                 footer={
                     <div className=''>
-                        <button className='' onClick={() =>{createTopic()}}>
+                        <button className='' onClick={() => { createTopic() }}>
                             Create Topic
                         </button>
                         <button className='' onClick={() => { hideModal() }}>
@@ -138,11 +145,13 @@ function Forum(props) {
                             value={title} required onChange={(e) => { setTitle(e.target.value) }} />
                     </div>
                     <div className="col-span-3 px-2 ml-4">
-                        <Dropdown classNam='' overlay={menu}>
+                        <Dropdown className='inline-block' overlay={menu}>
                             <button className='bg-yellow-500 p-2 text-white font-bold'>
                                 {tags}
                             </button>
                         </Dropdown>
+                        <input className='inline-block adasbg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-sm py-2 px-4 block appearance-none leading-normal' placeholder='challenge id'
+                            value={challengeId} required onChange={(e) => { setChallengeId(e.target.value) }} hidden={!(tags === 'challenge')} />
                     </div>
                 </div>
                 <div> Use <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>Markdown</a></div>
