@@ -30,20 +30,20 @@ function Topic(props) {
             setContentNewTopic(response.data.content.content)
             setTitle(response.data.content.name)
             setTags(response.data.content.tags[0]);
-            if(response.data.content.challengeId){
+            if (response.data.content.challengeId) {
                 setChallengeId(response.data.content.challengeId)
             }
         }).catch(error => {
             alert(error);
         })
-    },[forceRender])
+    }, [forceRender])
     useEffect(() => {
         callApiAsPromise('get', apiBaseUrl + 'topics/' + topicId, null, null).then(response => {
             setTopic(response.data.content)
             setContentNewTopic(response.data.content.content)
             setTitle(response.data.content.name)
             setTags(response.data.content.tags[0]);
-            if(response.data.content.challengeId){
+            if (response.data.content.challengeId) {
                 setChallengeId(response.data.content.challengeId)
             }
         }).catch(error => {
@@ -52,7 +52,7 @@ function Topic(props) {
     }, [])
 
     const sendComment = () => {
-        if(reply.split(' ').length < 4){
+        if (reply.split(' ').length < 4) {
             message.error('reply must > 3 words');
             return
         }
@@ -101,7 +101,7 @@ function Topic(props) {
     const hideModal = e => {
         setModalVisible(false)
     };
-    
+
     const updateTopic = () => {
         if (title === '') {
             message.error('Title is required');
@@ -135,7 +135,7 @@ function Topic(props) {
     }
     const isOwner = typeof topic.userId !== 'undefined' && typeof props.userInfo !== 'undefined' && topic.userId._id === props.userInfo._id
     const openReplyBox = () => {
-        if (props.userInfo._id){
+        if (props.userInfo._id) {
             setIsReply(true);
         } else {
             message.error('Login first')
@@ -149,10 +149,12 @@ function Topic(props) {
             message.error('Delete topic failed!')
         })
     }
-
+    const linkToShare = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href) + "&amp;src=sdkpreparse";
+    console.log(linkToShare);
+    
     if (topic._id) {
         if (redirect) {
-          return <Redirect to='/forum'/>;
+            return <Redirect to='/forum' />;
         }
         const commentComponents = topic.comments.map((comment) => {
             let parsedComment = JSON.parse(comment)
@@ -225,9 +227,10 @@ function Topic(props) {
                                         <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
                                         >Share
                                         </button>
+                                        <div hidden = { process.env.mode !== 'PRODUCTION'} className="fb-share-button" data-href={window.location.href} data-layout="button" data-size="large"><a target="_blank" href= {linkToShare} className="fb-xfbml-parse-ignore">Chia sẻ</a></div>
                                         <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
                                             hidden={!isOwner}
-                                            onClick={() =>{ deleteTopic()}}
+                                            onClick={() => { deleteTopic() }}
                                         >Delete
                                         </button>
                                         <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
