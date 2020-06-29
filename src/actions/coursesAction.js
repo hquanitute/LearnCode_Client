@@ -15,7 +15,7 @@ export function setCourseSelectedAction(course){
 }
 
 export function updateCourseSelectedAction(courseID){
-    const request = callApiAsPromise("GET", "http://127.0.0.1:5000/api/courses/" +courseID, null, null)
+    const request = callApiAsPromise("GET", apiBaseUrl + "courses/" +courseID, null, null)
     return dispatch =>
         request.then(response =>
             dispatch({
