@@ -1,7 +1,7 @@
 import { callApiAsPromise, apiBaseUrl } from "../api";
 
 export function getAllChallenge(){
-    const request = callApiAsPromise("GET", "http://127.0.0.1:5000/api/challenges", null, null)
+    const request = callApiAsPromise("GET", apiBaseUrl + "challenges", null, null)
     return dispatch =>
         request.then(response =>
             dispatch({
