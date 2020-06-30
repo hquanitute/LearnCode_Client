@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import LearnPage from '../LearnPage';
 import { Link, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Row, Col } from 'antd';
-import { Input } from 'antd';
 
 import '../../style/css/navbar.css';
 import { connect } from 'react-redux';
