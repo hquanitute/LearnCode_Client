@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import '../../style/css/learn.css';
 import { Collapse } from 'antd';
-import { useParams, useRouteMatch, Link, Switch, Router, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import Welcome from './welcome';
-import ListPractice from './listPractice';
-import Challenge from './challenge';
-import { setChallengeSelectedAction } from './../../actions/challengesAction'
+import { Link, useRouteMatch } from 'react-router-dom';
+import '../../style/css/learn.css';
+import { setChallengeSelectedAction } from './../../actions/challengesAction';
+
+const quotes = require('../../api/quotes.json');
 
 const { Panel } = Collapse;
 function LearnPage(props) {
@@ -18,11 +17,17 @@ function LearnPage(props) {
     let chooseChallenge = (a) => {
         props.setChallengeSelected(a);
     }
-    // console.log(props.cou);
 
-    return (
-        <div>
+    const quotesComponents = (
+        <div className='my-12'>
+            <quotes className="mt-4 font-sans text-xl text-gray-800 text-center">{quotes[Math.floor(Math.random() * quotes.length)].text}</quotes>
+            <br/>
+            <i>--- {quotes[Math.floor(Math.random() * quotes.length)].author} ---</i>
+        </div>
+    )
 
+    const listPractice = (
+        <div className=''>
             {
                 (props.courses || []).map(course => (
                     <Collapse>
@@ -33,8 +38,8 @@ function LearnPage(props) {
                                         <Panel header={lesson.name} key={lesson._id}>
                                             {
                                                 (lesson.challenges || []).map(challenge => (
-                                                    <div key={challenge._id}>
-                                                        <Link to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link>
+                                                    <div key={challenge._id} abx>
+                                                        <Link className='float-left text-black block ' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br/>
                                                     </div>
                                                 ))
                                             }
@@ -46,6 +51,15 @@ function LearnPage(props) {
                     </Collapse>
                 ))
             }
+        </div>
+    )
+    return (
+        <div className='grid md:grid-cols-12 sm:grid-cols-1'>
+            <div className='md:col-span-8 md:col-start-3'>
+                <h1 className="mt-4">Welcome to Learn Code</h1>
+                {quotesComponents}
+                {listPractice}
+            </div>
         </div>
 
     );
