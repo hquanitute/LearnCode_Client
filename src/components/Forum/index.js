@@ -32,7 +32,7 @@ function Forum(props) {
     };
 
     const createTopic = () => {
-        if (!props.user.id) {
+        if (!props.user._id) {
             message.error('Sign in to create new topic');
         } else if (title === '') {
             message.error('Title is required');

@@ -117,11 +117,11 @@ function Challenge(props) {
     }
     const resetCode = () => {
         setCode(props.challengeSelected.contents)
-        setTestInfo("//Test will shown here")
+        setTestInfo(" //Test will shown here")
     }
-    const goToForum = () => {
-        console.log("quan3");
-    }
+    // const goToForum = () => {
+    //     console.log("quan3");
+    // }
     return (
         <div>
             <Layout id="layout-main">
@@ -148,10 +148,10 @@ function Challenge(props) {
                                     onClick={() => resetCode()}>
                                     Reset all code
                                 </button>
-                                <button className="bg-transparent text-xl hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border-8 border-blue-500 hover:border-transparent rounded"
-                                    onClick={() => goToForum()}>
+                                <Link className="bg-transparent text-xl hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border-8 border-blue-500 hover:border-transparent rounded"
+                                    to={`/forum/` + props.challengeSelected.forumTopicId } >
                                     Go to Forum
-                                </button>
+                                </Link>
                             </div>
                         </Layout>
                     </ReflexElement>

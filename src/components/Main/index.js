@@ -23,26 +23,26 @@ function Main(props) {
             <Router>
                 <div className="content-center min-h-screen">
                     <nav>
-                        <Row className="p-0 font-bold bg-gray-900">
+                        <div className="p-0 font-bold bg-gray-900 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8">
                             {/* <Col span={6}>
                                 <Search className="m-0 textGrey" id="search-input" placeholder="Input course you want to learn" onSearch={value => console.log(value)} />
                             </Col> */}
                             {/* Offset: grid=24 grid-6:for search. offset = ((24/2-6)-(span))/2= 5 */}
-                            <Col span={2} offset={9}>
+                            <div className="lg:col-start-4">
                                 <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
                                     LearnCodeClient
                                 </Link>
-                            </Col>
-                            <Col className="my-2" span={3} offset={4}>
+                            </div>
+                            <div className="my-2 md:col-start-4 lg:col-start-6">
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
-                            </Col>
-                            <Col className="my-2" span={1} offset={1}>
+                            </div>
+                            <div className="my-2 " >
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
-                            </Col>
-                            <Col className="my-2" span={1} offset={1}>
+                            </div>
+                            <div className="my-2" >
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/learn">Learn</Link>
-                            </Col>
-                        </Row>
+                            </div>
+                        </div>
                     </nav>
                     {/* <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn/top1/ba1/da">topic111</Link> */}
                     <Switch>
@@ -75,11 +75,7 @@ function Main(props) {
                                     LearnCodeClient
                                 </Link>
                             </div>
-                            {/* <div className="col-start-6" span={1} offset={5}>
-                                <a className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2"
-                                    href='http://localhost:5000/auth/google'>Login</a>
-                            </div> */}
-                            <div className="my-2 md:col-start-5 lg:col-start-7" span={1} offset={1}>
+                            <div className="my-2 md:col-start-5 lg:col-start-7">
                                 <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
                             </div>
                             <div className="my-2" span={1} offset={1}>

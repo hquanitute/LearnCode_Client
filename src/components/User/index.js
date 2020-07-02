@@ -69,7 +69,7 @@ function UserProfile(props) {
             </div>
         );
     return (
-        <div>
+        <div className='topic-bg'>
             <Row className='pt-4'>
                 <Col span={12} offset={6}>
                     {isEditing ? confirmUpdateButton : updateButton}
@@ -80,7 +80,7 @@ function UserProfile(props) {
                         onClick={() => { setIsEditing(true) }}>Sign me out</button> */}
 
                     <input className="text-center font-bold text-2xl mb-2" readOnly={!isEditing} value={userName} onChange={(e) => setUserName(e.target.value)} />
-                    <div className="text-center font-base text-base mb-2"> {props.userInfo.email}</div>
+                    <div className="text-center text-white font-base text-base mb-2"> {props.userInfo.email}</div>
                     {avatarComponent}
                 </Col>
             </Row>

@@ -125,11 +125,11 @@ function Topic(props) {
                 userId: props.userInfo._id,
             }
             callApiAsPromise('put', apiBaseUrl + 'topics/' + topic._id, null, JSON.stringify(data)).then(res => {
-                message.info('Create new topic successfully');
+                message.info('Updated topic successfully');
                 setModalVisible(false);
                 setForceRender(!forceRender);
             }).catch((err) => {
-                message.error('Create topic failed!')
+                message.error('Updated topic failed!')
             })
         }
     }
@@ -150,8 +150,7 @@ function Topic(props) {
         })
     }
     const linkToShare = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href) + "&amp;src=sdkpreparse";
-    console.log(linkToShare);
-    
+
     if (topic._id) {
         if (redirect) {
             return <Redirect to='/forum' />;

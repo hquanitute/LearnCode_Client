@@ -10,8 +10,8 @@ function Home(props) {
                 href={process.env.REACT_APP_GOOGLE} > Login with Google </a>
         );
     return (
-        <div>
-            <h1 className="mt-4">Welcome to Learn Code</h1>
+        <div className ='topic-bg min-h-screen'>
+            <h1 className="pt-4">Welcome to Learn Code</h1>
             <h2 className="mt-4">Learn Code on your bed</h2>
             <h2 className="mt-4">Discuss Technical</h2>
             <h3 className="mt-4 font-normal">Dissertation of 2-member team - Quan and Dat, which will help you to improve coding skills</h3>

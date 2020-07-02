@@ -35,9 +35,9 @@ function LearnPage(props) {
         )
     const quotesComponents = (
         <div className='my-12'>
-            <quotes className="mt-4 font-sans text-xl text-gray-800 text-center">{quotes[Math.floor(Math.random() * quotes.length)].text}</quotes>
+            <h1 className="mt-4 font-sans text-xl text-gray-400 text-center">{quotes[Math.floor(Math.random() * quotes.length)].text}</h1>
             <br />
-            <i>--- {quotes[Math.floor(Math.random() * quotes.length)].author} ---</i>
+            <i className='text-gray-400'>--- {quotes[Math.floor(Math.random() * quotes.length)].author} ---</i>
         </div>
     )
 
@@ -111,7 +111,7 @@ function LearnPage(props) {
             </div>
         )
     return (
-        <div className='grid md:grid-cols-12 sm:grid-cols-1'>
+        <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
             <div className='md:col-span-8 md:col-start-3'>
                 {welcomeComponent}
                 {quotesComponents}

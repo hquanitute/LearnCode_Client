@@ -18,26 +18,32 @@
 h1{
     font-size: 2em;
     font-weight: bolder;
+    color : white;
 }
 h2{
     font-size: 1.5em;
     font-weight: bolder;
+    color : white;
 }
 h3{
     font-size: 1.17em;
-    font-weight: bolder;    
+    font-weight: bolder;  
+    color : white;  
 }
 h4{
     font-size: 1em;
     font-weight: bolder;
+    color : white;
 }
 h5{
     font-size: .83em;
     font-weight: bolder;
+    color : white;
 }
 h6{
     font-size: .67em;
     font-weight: bolder;
+    color : white;
 }
 hr{
     border-width: 0.3px !important;
@@ -45,6 +51,7 @@ hr{
 .topic-bg{
     background-color: #313146;
     min-height: 93vh !important;
+    
 }
 .topic-question-bg{
     background-color: #1e1e2c;
