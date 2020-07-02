@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { useParams, useRouteMatch, Link } from 'react-router-dom';
-
-import { Layout, Row, Modal, Button } from 'antd';
-import '../../style/css/learn.css';
-
+import { useParams, Link } from 'react-router-dom';
+import { Layout, Modal, Button } from 'antd';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-min-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-terminal";
-
 import {
     ReflexContainer,
     ReflexSplitter,
     ReflexElement
 } from 'react-reflex'
 import 'react-reflex/styles.css'
-import marked from 'marked'
 
 import { setChallengeSelectedAction } from '../../actions/challengesAction';
-import { callApiAsPromise } from '../../api';
+import { callApiAsPromise, apiBaseUrl } from '../../api';
+import '../../style/css/learn.css';
+import { updateUser } from '../../actions/userAction';
+
 const ReactMarkdown = require('react-markdown')
 const { Header, Content } = Layout;
 
@@ -93,13 +91,22 @@ function Challenge(props) {
                 "code": "string"
             }
         }
-        console.log(data);
-
-        callApiAsPromise("post", "http://104.248.148.136:8080/itcodeweb-0.0.1-SNAPSHOT/code", null, JSON.stringify(data)).then((response) => {
-            console.log(response.data);
+        callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {   
+        console.log(response.data);
 
             if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage) {
                 setTestInfo(response.data.successMessage.successComplieMessage)
+                if (props.userInfo._id){
+                    const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;                    
+                    if (!listChallengeIdPassed.includes(challengeId)){
+                        listChallengeIdPassed.push(challengeId);                        
+                        callApiAsPromise("put", apiBaseUrl + 'users/'+props.userInfo._id, null, JSON.stringify({'listChallengeIdPassed':listChallengeIdPassed}))
+                            .then((res) => {
+                                props.updateUserInfo(res.data.value);
+                            })
+                            .catch(console.log())
+                    }
+                }
                 showModal()
             } else {
                 setTestInfo(response.data.successMessage.successComplieMessage +
@@ -217,13 +224,17 @@ function Challenge(props) {
 const mapStateToProps = (state, ownProps) => {
     return {
         challengeSelected: state.challengeSelected,
-        courses: state.courses
+        courses: state.courses,
+        userInfo: state.userInfo
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         setChallengeSelected: (challengeId) => {
             dispatch(setChallengeSelectedAction(challengeId))
+        },
+        updateUserInfo: (data) => {
+            dispatch(updateUser(data))
         }
     }
 }
