@@ -12,90 +12,65 @@ import VerifyLogin from '../Login/verifyLogin';
 import Forum from '../Forum';
 import Topic from '../Forum/topic';
 import Home from '../Home';
+import styled from "styled-components";
 
+
+const HeaderWraper=styled.div`
+    background-color:#292929;
+    color:#ece0c9;
+    a{
+         color:#ece0c9;
+    }
+    a:hover{
+        color:#fff;
+    }
+    .nav-item{
+        font-size:1.5rem;
+    }
+`
 function Main(props) {
     useEffect(() => {
         props.getCourses();
     }, [])
 
-    const mainLogedIn = (
-        <div className=''>
+    const mainApp = (
+        <div>
             <Router>
-                <div className="content-center min-h-screen">
-                    <nav>
-                        <div className="p-0 font-bold bg-gray-900 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8">
-                            {/* <Col span={6}>
-                                <Search className="m-0 textGrey" id="search-input" placeholder="Input course you want to learn" onSearch={value => console.log(value)} />
-                            </Col> */}
-                            {/* Offset: grid=24 grid-6:for search. offset = ((24/2-6)-(span))/2= 5 */}
-                            <div className="lg:col-start-4">
-                                <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
-                                    LearnCodeClient
-                                </Link>
+                <div className="content-center">
+                        <nav>
+                            <HeaderWraper>
+                            <div className="p-0 font-bold flex flex-row items-center">
+                                <div className="w-1/3">
+
+                                </div>
+                                <div className="w-1/3">
+                                    <Link className="font-extrabold tracking-widest text-3xl" to="/">
+                                        LearnCodeClient
+                                    </Link>
+                                </div>
+                                <div className="w-1/3 flex flex-row justify-end">
+                                    {props.userInfo._id&&<div className="p-2">
+                                        <Link className="font-normal nav-item " to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
+                                    </div>}
+                                    <div className="p-2">
+                                        <Link className="font-normal nav-item " to="/forum">Forum</Link>
+                                    </div>
+                                    <div className="p-2">
+                                        <Link className="font-normal nav-item " to="/learn">Learn</Link>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="my-2 md:col-start-4 lg:col-start-6">
-                                <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
-                            </div>
-                            <div className="my-2 " >
-                                <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
-                            </div>
-                            <div className="my-2" >
-                                <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/learn">Learn</Link>
-                            </div>
-                        </div>
-                    </nav>
-                    {/* <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn/top1/ba1/da">topic111</Link> */}
+                            </HeaderWraper>
+                        </nav>
                     <Switch>
                         <Route exact path="/" children={<Home />} />
                         <Route exact path="/learn" children={<LearnPage />} />
-                        {/* <Route path={`/learn/:topic/:lesson/`} children={<IntroLesson />} /> */}
                         <Route path={`/learn/:challengeId`} children={<Challenge />} />
                         <Route exact path="/forum" children={<Forum />} />
                         <Route path={`/forum/:topicId`} children={<Topic />} />
                         <Route path="/user">
                             <UserProfile />
                         </Route>
-                        <Route path="*">
-                            <Home />
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
-        </div >
-    )
-    const mainNotLogedIn = (
-        <div>
-            <Router>
-                <div className="content-center">
-                    <nav>
-                        <div className="p-0 font-bold bg-gray-900 flex flex-row">
-                            <div className="w-1/3">
-
-                            </div>
-                            <div className="w-1/3">
-                                <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
-                                    LearnCodeClient
-                                </Link>
-                            </div>
-                            <div className="w-1/3 flex flex-row justify-end">
-                                <div className="my-2">
-                                    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
-                                </div>
-                                <div className="my-2 ">
-                                    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/learn">Learn</Link>
-                                </div>
-                            </div>
-                           
-                        </div>
-                    </nav>
-                    {/* <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn/top1/ba1/da">topic111</Link> */}
-                    <Switch>
-                        <Route exact path="/" children={<Home />} />
-                        <Route exact path="/learn" children={<LearnPage />} />
-                        {/* <Route path={`/learn/:topic/:lesson/`} children={<IntroLesson />} /> */}
-                        <Route path={`/learn/:challengeId`} children={<Challenge />} />
-                        <Route exact path="/forum" children={<Forum />} />
-                        <Route path={`/forum/:topicId`} children={<Topic />} />
                         <Route path="/verifyLogin">
                             <VerifyLogin />
                         </Route>
@@ -108,7 +83,7 @@ function Main(props) {
         </div >
     )
     return (
-        props.userInfo._id ? mainLogedIn : mainNotLogedIn
+         mainApp
     );
 }
 
