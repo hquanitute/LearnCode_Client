@@ -68,19 +68,24 @@ function Main(props) {
             <Router>
                 <div className="content-center">
                     <nav>
-                        <div className="p-0 font-bold bg-gray-900 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8">
-                            {/* Offset: grid=24 grid-6:for search. offset = ((24/2-6)-(span))/2= 5 */}
-                            <div className="lg:col-start-4">
+                        <div className="p-0 font-bold bg-gray-900 flex flex-row">
+                            <div className="w-1/3">
+
+                            </div>
+                            <div className="w-1/3">
                                 <Link className="textGrey font-extrabold tracking-widest text-3xl" to="/">
                                     LearnCodeClient
                                 </Link>
                             </div>
-                            <div className="my-2 md:col-start-5 lg:col-start-7">
-                                <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
+                            <div className="w-1/3 flex flex-row justify-end">
+                                <div className="my-2">
+                                    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/forum">Forum</Link>
+                                </div>
+                                <div className="my-2 ">
+                                    <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/learn">Learn</Link>
+                                </div>
                             </div>
-                            <div className="my-2" span={1} offset={1}>
-                                <Link className="textGrey rightNav font-normal bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-2" to="/learn">Learn</Link>
-                            </div>
+                           
                         </div>
                     </nav>
                     {/* <Link className="textGrey rightNav bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white rounded-md p-1" to="/learn/top1/ba1/da">topic111</Link> */}
