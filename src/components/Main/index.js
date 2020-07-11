@@ -19,14 +19,22 @@ const HeaderWrapper=styled.div`
     background-color:#292929;
     color:#ece0c9;
     a{
-         color:#ece0c9;
+         color:#fff;
     }
     a:hover{
-        color:#fff;
+        color:#ece0c9;
     }
     .nav-item{
         font-size:16px;
         font-weight:bold;
+    }
+    .logo{
+        font-weight:bold;
+        font-size:20px;
+    }
+    
+    .slogan{
+        font-size:10px;
     }
     
 `
@@ -37,7 +45,13 @@ const BodyStyleWrapper=styled.div`
         padding: 10px 20px;
         border-radius: 5px;
         font-weight: bold;
+        color: #fff;
     }
+    
+    
+    color:#292b2c ;
+    
+   
 `
 function Main(props) {
     useEffect(() => {
@@ -50,14 +64,17 @@ function Main(props) {
                 <div className="content-center">
                         <nav>
                             <HeaderWrapper>
-                            <div className="p-0 font-bold flex flex-row items-center">
-                                <div className="w-1/3">
-
+                            <div className="p-0 font-bold flex flex-row items-center p-2">
+                                <div className="w-1/3 flex  flex-col justify-start">
+                                    <div className="w-3/12 flex flex-col">
+                                        <Link className="logo " to="/">
+                                            It-UTE
+                                        </Link>
+                                        <span className=" slogan">Learn to better</span>
+                                    </div>
                                 </div>
                                 <div className="w-1/3">
-                                    <Link className="font-extrabold tracking-widest text-3xl" to="/">
-                                        LearnCodeClient
-                                    </Link>
+
                                 </div>
                                 <div className="w-1/3 flex flex-row justify-end">
                                     {props.userInfo._id&&<div className="p-2">
