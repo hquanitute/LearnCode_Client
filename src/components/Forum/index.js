@@ -171,7 +171,7 @@ function Forum(props) {
                     </div>
                     <div className="status-topic mt-4">
                         <span  className="mr-3"><EyeOutlined className="icon" /><span> 30</span></span>
-                        <span className="mr-3"><CommentOutlined className="icon" /><span>{topic.comments.length}</span></span>
+                        <span className="mr-3"><CommentOutlined className="icon" /><span>{topic.comments&&topic.comments.length||0}</span></span>
                         <span className="mr-3"><PushpinOutlined className="icon" /><span> 0</span></span>
                     </div>
                 </div>

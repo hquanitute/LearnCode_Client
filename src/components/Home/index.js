@@ -7,7 +7,7 @@ function Home(props) {
         <Link to={'/learn'} className='w-full h-12 border-1 border-solid border-gray-900 bg-gray-400 hover:bg-gray-900 text-gray-900 font-extrabold hover:text-white py-2 px-4'> Get started </Link>
     ) : (
             <a className='btn-login'
-           href={process.env.REACT_APP_GOOGLE} > Login with Google </a>
+           href="https://learn-server-api.herokuapp.com/auth/google" > Login with Google </a>
         );
     return (
         <div className ='topic-bg min-h-screen'>

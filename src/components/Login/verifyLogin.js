@@ -21,9 +21,6 @@ function VerifyLogin(props) {
         }
     }, [])
     return (
-        // <div>
-        //     Login successfully. Click here to Learn now.
-        // </div>
         <Redirect push to="/" />
     );
 }
