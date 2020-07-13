@@ -109,8 +109,8 @@ function Challenge(props) {
                 "code": "string"
             }
         }
-        callApiAsPromise("post", "http://104.248.148.136:8080/itcodeweb-0.0.1-SNAPSHOT/" + "code", null, JSON.stringify(data)).then((response) => {   
-        console.log(response.data);
+        callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
+        console.log(props.userInfo);
 
             if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage) {
                 setTestInfo(response.data.successMessage.successComplieMessage)

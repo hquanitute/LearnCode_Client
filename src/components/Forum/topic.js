@@ -59,6 +59,18 @@ const TopicStyleWrapper=styled.div`
             font-size:12px;
             cursor:pointer;
         }
+        
+        .reply-box{
+            border-top:1px solid;
+        }
+        
+        .btn-vote{
+            
+        }
+        
+        .like-number{
+            font-size:1.2rem;
+        }
     
 `
 
@@ -114,12 +126,11 @@ function Topic(props) {
         }
         const comment = {
             userId: props.userInfo,
-            content: reply
+            content: reply,
+            topicId: topic._id
         }
-        const data = {
-            comments: [...topic.comments, JSON.stringify(comment)]
-        }
-        callApiAsPromise('put', apiBaseUrl + 'topics/' + topic._id, null, JSON.stringify(data)).then(response => {
+        const data = JSON.stringify(comment)
+        callApiAsPromise('post', apiBaseUrl + 'comments/', null, data).then(response => {
             setTopic(response.data.value);
             setIsReply(false);
             setIsShowPreview(false);
@@ -211,23 +222,18 @@ function Topic(props) {
         if (redirect) {
             return <Redirect to='/forum' />;
         }
-        const commentComponents = topic.comments&&topic.comments.map((comment) => {
-            let parsedComment = JSON.parse(comment)
+        const commentComponents = topic.commentsObject&&topic.commentsObject.map((comment) => {
             return (
                 <Row className='comment p-2'>
                     <Col span={2}>
                         <div className="">
-                            <img className='h-8 w-10 md:h-12 md:w-12 mx-auto mt-2' src={parsedComment.userId.avater} alt='user avatar' />
+                            <div className='text-left  font-medium text-base'>
+                                <ReactMarkdown height='200px' source={comment.content} escapeHtml={false} />
+                            </div>
                         </div>
                     </Col>
                     <Col span={22} offset={0} className='text-left p-1'>
                         <div className='pl-2'>
-                            <button className='pb-2 text-left text-white font-bold text-lg'>
-                                {parsedComment.userId.name}
-                            </button>
-                            <div className='text-left text-white font-medium text-base'>
-                                <ReactMarkdown height='200px' source={parsedComment.content} escapeHtml={false} />
-                            </div>
                         </div>
                     </Col>
                 </Row>
@@ -274,8 +280,21 @@ function Topic(props) {
                             </div>
                         </div>
 
-                        <div className='question-container'>
-                                    <div className='question-detail p-5'>
+                        <div className="flex flex-row">
+                            <div className="w-1/12">
+                                <button className="btn-vote">
+                                    <svg aria-hidden="true" className="m0 svg-icon iconArrowUpLg" width="36" height="36"
+                                         viewBox="0 0 36 36">
+                                        <path d="M2 26h32L18 10 2 26z"></path>
+                                    </svg>
+                                </button>
+                                <div className="like-number">
+                                    <span>210</span>
+                                </div>
+                            </div>
+                            <div className="w-11/12 mt-3">
+                                <div className='question-container'>
+                                    <div className='question-detail'>
                                         <ReactMarkdown height='200px' source={topic.content} escapeHtml={false} />
                                     </div>
                                     <div className='question-footer'>
@@ -291,42 +310,46 @@ function Topic(props) {
                                         >Edit
                                         </button>
                                         <span className='share-question'
-                                                onClick={() => { openReplyBox(); }}
+                                              onClick={() => { openReplyBox(); }}
                                         >Add a comment
                                         </span>
                                     </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <hr />
-                    <div className='reply-box mt-2 mb-12' hidden={!isReply}>
-                        <TextareaAutosize
-                            className="markdown-block-area w-full p-4"
-                            value={reply}
-                            placeholder="Reply. Use Markdown"
-                            onChange={(e) => setReply(e.target.value)} />
-                        <div className='float-left'>
-                            <button className='bg-green-500 hover:bg-green-700 rounded p-2 font-bold text-white ml-auto' onClick={() => setIsShowPreview(!isShowPreview)}>
-                                {isShowPreview ? 'Hide preview' : 'Show preview'}
-                            </button>
+
+
+                        <div className='reply-box mt-2 mb-12' hidden={!isReply}>
+                            <TextareaAutosize
+                                className="markdown-block-area w-full p-4 mb-6"
+                                value={reply}
+                                placeholder="Reply. Use Markdown"
+                                onChange={(e) => setReply(e.target.value)} />
+                            <div className='float-left'>
+                                <button className='bg-green-500 hover:bg-green-700 rounded p-2 font-bold text-white ml-auto' onClick={() => setIsShowPreview(!isShowPreview)}>
+                                    {isShowPreview ? 'Hide preview' : 'Show preview'}
+                                </button>
+                            </div>
+                            <div className='float-right'>
+                                <button className='bg-red-500 hover:bg-red-700 rounded p-2 font-bold text-white mr-2'
+                                        onClick={() => setIsReply(false)}>
+                                    Cancel
+                                </button>
+                                <button className='bg-blue-500 hover:bg-blue-700 rounded p-2 font-bold text-white mr-2'
+                                        onClick={() => sendComment()}>
+                                    Reply
+                                </button>
+                            </div>
                         </div>
-                        <div className='float-right'>
-                            <button className='bg-red-500 hover:bg-red-700 rounded p-2 font-bold text-white mr-2'
-                                    onClick={() => setIsReply(false)}>
-                                Cancel
-                            </button>
-                            <button className='bg-blue-500 hover:bg-blue-700 rounded p-2 font-bold text-white mr-2'
-                                    onClick={() => sendComment()}>
-                                Reply
-                            </button>
+
+                        <div className='preview-box mb-12' hidden={!(isReply && isShowPreview)}>
+                            <div className="bg-white previous col-span-3 pt-3 px-2" overflow='scroll'>
+                                <ReactMarkdown height='400px' source={reply} escapeHtml={false} />
+                            </div>
                         </div>
+                        {commentComponents}
                     </div>
 
-                    <div className='preview-box mb-12' hidden={!(isReply && isShowPreview)}>
-                        <div className="bg-white previous col-span-3 pt-3 px-2" overflow='scroll'>
-                            <ReactMarkdown height='400px' source={reply} escapeHtml={false} />
-                        </div>
-                    </div>
-                    {commentComponents}
                     <Modal
                         className='modal-new-topic'
                         title="Create new topic"

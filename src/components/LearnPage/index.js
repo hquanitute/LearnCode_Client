@@ -25,6 +25,14 @@ const LearnPageWrapper=styled.div`
         font-weight:bold;
     }
     
+    .challenge-item{
+        color:black;
+    }
+    
+    .challenge-item:hover{
+        color:#1538c2;
+    }
+    
 `
 function LearnPage(props) {
     let { path, url } = useRouteMatch();
@@ -38,8 +46,7 @@ function LearnPage(props) {
 
     const welcomeComponent = props.userInfo._id ? (
         <div className=''>
-            <h1 className="mt-4">Welcome back, {props.userInfo.name}</h1>
-
+            <h1 className="mt-4 font-bold">Welcome back, {props.userInfo.name}</h1>
         </div>
     ) : (
             <div className='row mt-4'>
@@ -74,14 +81,14 @@ function LearnPage(props) {
                                                             return (
                                                                 <Row key={challenge._id} className=''>
                                                                     <span className='float-left  my-1 p-2'><i class="fa fa-check-circle"></i></span>
-                                                                    <Link className='challenge float-left text-black m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
+                                                                    <Link className='challenge-item float-left  m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
                                                                 </Row>
                                                             )
                                                         } else return (
                                                             (
                                                                 <Row key={challenge._id} className=''>
                                                                     <span className='float-left  my-1 p-2'><i class="fa fa-arrow-right"></i></span>
-                                                                    <Link className='challenge float-left text-black m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
+                                                                    <Link className='challenge-item float-left  m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
                                                                 </Row>
                                                             )
                                                         )

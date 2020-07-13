@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import LearnPage from '../LearnPage';
 import { Link, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Row, Col } from 'antd';
+import {Row, Col, Avatar} from 'antd';
 
 import '../../style/css/navbar.css';
 import { connect } from 'react-redux';
@@ -48,6 +48,15 @@ const BodyStyleWrapper=styled.div`
         color: #fff;
     }
     
+    .btn-get-started{
+        background-color: #34d26a;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #fff;
+        font-size: 20px;
+    }
+    
     
     color:#292b2c ;
     
@@ -73,19 +82,19 @@ function Main(props) {
                                         <span className=" slogan">Learn to better</span>
                                     </div>
                                 </div>
-                                <div className="w-1/3">
-
-                                </div>
-                                <div className="w-1/3 flex flex-row justify-end">
-                                    {props.userInfo._id&&<div className="p-2">
-                                        <Link className="font-normal nav-item " to="/user">{(props.userInfo.name || " ").split(" ")[0] || ""}</Link>
-                                    </div>}
+                                <div className="w-1/3 flex flex-row justify-center">
                                     <div className="p-2">
                                         <Link className="font-normal nav-item " to="/forum"><span>Forum</span></Link>
                                     </div>
                                     <div className="p-2">
                                         <Link className="font-normal nav-item " to="/learn"><span>Learn</span></Link>
                                     </div>
+                                </div>
+                                <div className="w-1/3 flex flex-row justify-end">
+                                    {props.userInfo._id&&
+                                    <div className="p-2">
+                                        <Link className="font-normal nav-item " to="/user"><span className="mx-2">{(props.userInfo.name || " ").split(" ")[0] || ""}</span><Avatar  src={props.userInfo.avater} /></Link>
+                                    </div>}
                                 </div>
                             </div>
                             </HeaderWrapper>

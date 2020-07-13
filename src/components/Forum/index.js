@@ -98,6 +98,8 @@ const ForumStyleWrapper=styled.div`
         font-size:20px;
         color:#fff;
     }
+    
+    
 `
 
 function Forum(props) {
@@ -176,7 +178,6 @@ function Forum(props) {
                     </div>
                 </div>
             </div>
-
             <div className='w-1/12'>
 
             </div>
