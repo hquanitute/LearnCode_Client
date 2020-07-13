@@ -80,6 +80,8 @@ function Challenge(props) {
             language = "NodejsTest"
         } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
             language = "Java"
+        } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
+            language = "Python2"
         }
 
         let data = {
