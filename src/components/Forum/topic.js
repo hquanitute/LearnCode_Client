@@ -7,7 +7,14 @@ import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import styled from "styled-components";
 import { Avatar } from 'antd';
-import {ProfileOutlined, StarOutlined, UserAddOutlined} from "@ant-design/icons";
+import {
+    CaretDownOutlined,
+    CaretUpOutlined, DownOutlined,
+    ProfileOutlined,
+    StarOutlined,
+    UpOutlined,
+    UserAddOutlined
+} from "@ant-design/icons";
 
 const TopicStyleWrapper=styled.div`
         text-align:start;
@@ -20,8 +27,11 @@ const TopicStyleWrapper=styled.div`
             font-size:14px;
         }
         
+        .comment{
+           border-top: 1px solid #ddc8c8;
+        }
         
-        
+      
         .tag{
            
             background-color: #e9e9ea;
@@ -64,13 +74,27 @@ const TopicStyleWrapper=styled.div`
             border-top:1px solid;
         }
         
-        .btn-vote{
-            
+        .btn-vote svg{
+            fill:#696969;
         }
         
         .like-number{
             font-size:1.2rem;
         }
+        
+        .comment{
+            font-size:12px;
+        }
+        
+        .comment .comment-body{
+            font-size:14px;
+        }
+        
+        .comment-vote{
+            padding: 0 5px;
+            border-right: 2px solid #b3a8a8;
+        }
+        
     
 `
 
@@ -216,6 +240,15 @@ function Topic(props) {
             message.error('Delete topic failed!')
         })
     }
+
+    const voteComment = (id) => {
+        callApiAsPromise('put', apiBaseUrl + `comments/${id}`, null, {likePeople:props.userInfo._id}).then(res => {
+            setForceRender(!forceRender);
+        }).catch((err) => {
+            message.error('Delete topic failed!')
+        })
+    }
+
     const linkToShare = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href) + "&amp;src=sdkpreparse";
 
     if (topic._id) {
@@ -224,19 +257,31 @@ function Topic(props) {
         }
         const commentComponents = topic.commentsObject&&topic.commentsObject.map((comment) => {
             return (
-                <Row className='comment p-2'>
-                    <Col span={2}>
-                        <div className="">
-                            <div className='text-left  font-medium text-base'>
-                                <ReactMarkdown height='200px' source={comment.content} escapeHtml={false} />
+                <div className="flex flex-col my-3 p-2 comment">
+                    <div className="flex flex-row justify-between comment-header">
+                            <div className="w-4/12 py-3">
+                                <span><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /><a href="#">Thanh Dat</a></span>
                             </div>
-                        </div>
-                    </Col>
-                    <Col span={22} offset={0} className='text-left p-1'>
-                        <div className='pl-2'>
-                        </div>
-                    </Col>
-                </Row>
+                            <div className="w-4/12 py-3 text-right">
+                                <span>Sep 25th, 2017 1:31 PM</span>
+                            </div>
+                    </div>
+                    <div className="comment-body">
+                        <ReactMarkdown height='200px' source={comment.content} escapeHtml={false} />
+                    </div>
+                    <div className="comment-footer flex flex-row">
+                            <div className="comment-vote">
+                                <button className="mr-1 " onClick={()=>voteComment(comment._id)}><UpOutlined /></button>
+                                <span>{comment.likePeople.length}</span>
+                            </div>
+                            <div>
+                                <button className="mx-1">Reply</button>
+                                <button className="mx-1">Share</button>
+                            </div>
+
+                    </div>
+
+                </div>
             )
 
         }
@@ -271,7 +316,6 @@ function Topic(props) {
                                             <span className="mr-3"><UserAddOutlined className="icon" />5</span>
                                             <span className="mr-3"><ProfileOutlined className="icon" />15</span>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div className="article-info">
