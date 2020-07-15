@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LearnPage from '../LearnPage';
+import LessonPage from '../LearnPage/lesson'
 import { Link, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import {Row, Col, Avatar} from 'antd';
 
@@ -103,6 +104,7 @@ function Main(props) {
                         <Switch>
                             <Route exact path="/" children={<Home />} />
                             <Route exact path="/learn" children={<LearnPage />} />
+                            <Route exact path="/learn/:course/lesson" children={<LessonPage />} />
                             <Route path={`/learn/:challengeId`} children={<Challenge />} />
                             <Route exact path="/forum" children={<Forum />} />
                             <Route path={`/forum/:topicId`} children={<Topic />} />

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 import '../../style/css/learn.css';
-import { setChallengeSelectedAction } from './../../actions/challengesAction';
+import {setChallengeSelectedAction, setLessons} from './../../actions/challengesAction';
 import styled from "styled-components";
 
 const quotes = require('../../api/quotes.json');
@@ -32,6 +32,41 @@ const LearnPageWrapper=styled.div`
     .challenge-item:hover{
         color:#1538c2;
     }
+    
+    .course{
+        box-shadow: 0 6px 16px 0 rgba(0,0,0,.2);
+        margin: 30px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 30px;
+        min-height: 183px;
+        cursor:pointer;
+        background: #fff;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    
+    .course:hover{
+        box-shadow:0 4px 12px 0 rgba(0,0,0,.15);
+    }
+ 
+    .course-title{
+         font-weight:bold;
+         font-size:1.3em;
+         max-height: 72.8px;
+         color: #0e141e;
+    }
+    
+    .btn-start-course{
+        border:1px solid green;
+        padding:5px;
+        color:green;
+        font-weight:bold;
+    }
+    
     
 `
 function LearnPage(props) {
@@ -63,6 +98,7 @@ function LearnPage(props) {
     )
 
     const listPractice = props.userInfo._id ? (
+        <>
         <div className=''>
                 {
                     (props.courses || []).map((course, index) => (
@@ -74,9 +110,6 @@ function LearnPage(props) {
                                             <Panel className='panelCustom' header={lesson.name} key={indexLesson}>
                                                 {
                                                     (lesson.challenges || []).map(challenge => {
-                                                        console.log(props.userInfo.listChallengeIdPassed);
-                                                        console.log(challenge._id);
-                                                        
                                                         if(props.userInfo.listChallengeIdPassed.includes(challenge._id)){
                                                             return (
                                                                 <Row key={challenge._id} className=''>
@@ -103,6 +136,20 @@ function LearnPage(props) {
                     ))
                 }
             </div>
+
+        <div className="flex flex-row">
+            {
+                (props.courses || []).map((course, index) => (
+                    <Link className="course w-3/12 " to={`${url}/${course._id}/lesson` } onClick={e=>props.setLessons(course.lessons)}>
+                        <h3 className="course-title text-left" key={index}>{course.name}</h3>
+                        <button className="btn-start-course mr-auto">Get Started</button>
+                    </Link>
+                ))
+            }
+
+        </div>
+            </>
+
     ) : (
             <div className=''>
                 {
@@ -154,6 +201,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         setChallengeSelected: (idChallenge) => {
             dispatch(setChallengeSelectedAction(idChallenge))
+        },
+        setLessons:(lsLession)=>{
+            dispatch(setLessons(lsLession))
         }
     }
 }

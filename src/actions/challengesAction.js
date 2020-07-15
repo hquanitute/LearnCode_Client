@@ -28,3 +28,11 @@ export function setChallengeSelectedAction(challengeId){
             })
         );
 }
+
+export function setLessons(lsLesson){
+    console.log("abc")
+    return{
+        type:"SET_LESSONS",
+        data:lsLesson
+    }
+}
