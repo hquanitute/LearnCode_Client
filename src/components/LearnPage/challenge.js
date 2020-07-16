@@ -76,17 +76,20 @@ function Challenge(props) {
     };
     const submitCode = () => {
         let language = "";
+        let codeSubmit = "";
         if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
             language = "NodejsTest"
+            codeSubmit = props.challengeSelected.tests + " " + code
         } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
             language = "Java"
         } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
-            language = "Python2"
+            language = "Python2";
+            codeSubmit = code
         }
 
         let data = {
             "codeSubmit": {
-                "code": props.challengeSelected.tests + " " + code
+                "code": codeSubmit
             },
             "language": language,
             "test": {
@@ -96,7 +99,10 @@ function Challenge(props) {
         callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {   
         console.log(response.data);
 
-            if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage) {
+            if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage === props.challengeSelected.runResult) {
+                console.log(response.data.successMessage.successComplieMessage);
+                console.log(props.challengeSelected.runResult);
+                
                 setTestInfo(response.data.successMessage.successComplieMessage)
                 if (props.userInfo._id){
                     const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;                    
