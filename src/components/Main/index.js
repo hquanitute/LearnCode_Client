@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LearnPage from '../LearnPage';
-import LessonPage from '../LearnPage/lesson'
+import ChallengesPage from '../LearnPage/lsChallenge'
 import { Link, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import {Row, Col, Avatar} from 'antd';
 
@@ -14,6 +14,7 @@ import Forum from '../Forum';
 import Topic from '../Forum/topic';
 import Home from '../Home';
 import styled from "styled-components";
+import LessonPage from "../LearnPage/lesson";
 
 
 const HeaderWrapper=styled.div`
@@ -105,6 +106,7 @@ function Main(props) {
                             <Route exact path="/" children={<Home />} />
                             <Route exact path="/learn" children={<LearnPage />} />
                             <Route exact path="/learn/:course/lesson" children={<LessonPage />} />
+                            <Route exact path="/learn/:courseId/lesson/:lessonId" children={<ChallengesPage />} />
                             <Route path={`/learn/:challengeId`} children={<Challenge />} />
                             <Route exact path="/forum" children={<Forum />} />
                             <Route path={`/forum/:topicId`} children={<Topic />} />

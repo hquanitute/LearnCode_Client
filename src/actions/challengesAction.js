@@ -30,9 +30,15 @@ export function setChallengeSelectedAction(challengeId){
 }
 
 export function setLessons(lsLesson){
-    console.log("abc")
     return{
         type:"SET_LESSONS",
         data:lsLesson
+    }
+}
+
+export function setChallenges(lsChallenge){
+    return{
+        type:"SET_CHALLENGES",
+        data:lsChallenge
     }
 }

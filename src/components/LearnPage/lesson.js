@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import styled from "styled-components";
+import {setChallenges, setLessons} from "../../actions/challengesAction";
+import {Link,useRouteMatch} from "react-router-dom";
 
 
 
@@ -28,6 +30,7 @@ const LessonPageWrapper=styled.div`
         font-size:1.2rem;
         font-weight:bold;
         text-align:left;
+        color:black;
     }
 
     .lesson-btn{
@@ -61,22 +64,21 @@ const LessonPageWrapper=styled.div`
 
 `
 function LessonPage(props) {
-
+    let { path, url } = useRouteMatch();
 
     return (
         <LessonPageWrapper>
             <div className="flex flex-row">
              {(props.challengeSelected.lessons || []).map((lesson, indexLesson) => (
-                    <div className="lesson-wrapper w-3/12">
-
+                 <Link className="lesson-wrapper w-3/12" to={`${url}/${lesson._id}` } onClick={e=>props.setChallenges(lesson.challenges)}>
+                    <div className="">
                          <span className="number-challenge">{lesson.challenges&&lesson.challenges.length}</span>
                          <div className="lesson ">
                                <p className="lesson-title">{lesson.name}</p>
                                <button className="lesson-btn">See Challenge</button>
                         </div>
                     </div>
-
-
+                 </Link>
                 ))}
             </div>
         </LessonPageWrapper>
@@ -89,6 +91,9 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
+        setChallenges:(challenges)=>{
+            dispatch(setChallenges(challenges))
+        }
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LessonPage);
