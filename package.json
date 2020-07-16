@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.2.1",
+    "@ant-design/tools": "^10.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
-    "antd": "^3.26.11",
+    "antd": "^3.26.18",
     "autoprefixer": "^9.7.4",
     "axios": "^0.19.2",
     "jsonwebtoken": "^8.5.1",
@@ -28,6 +30,7 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "styled-components": "^5.1.1",
     "tailwindcss": "^1.2.0"
   },
   "scripts": {

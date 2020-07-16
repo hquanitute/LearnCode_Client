@@ -18,9 +18,27 @@ import { setChallengeSelectedAction } from '../../actions/challengesAction';
 import { callApiAsPromise, apiBaseUrl } from '../../api';
 import '../../style/css/learn.css';
 import { updateUser } from '../../actions/userAction';
+import styled from "styled-components";
 
 const ReactMarkdown = require('react-markdown')
 const { Header, Content } = Layout;
+
+const ChallengeStyleWrapper=styled.div`
+    padding:20px 0;
+    .btn-bottom-action{
+        background-color: while;
+        border: 1px solid;
+        padding: 10px;
+        border-radius: 5px;
+        color: black;
+        font-weight: bold;
+    }
+    .btn-bottom-action:hover{
+        background-color: #292929;
+        color: #fff;
+    }
+`
+
 
 function Challenge(props) {
     let { challengeId } = useParams();
@@ -96,8 +114,8 @@ function Challenge(props) {
                 "code": "string"
             }
         }
-        callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {   
-        console.log(response.data);
+        callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
+        console.log(props.userInfo);
 
             if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage === props.challengeSelected.runResult) {
                 console.log(response.data.successMessage.successComplieMessage);
@@ -127,106 +145,107 @@ function Challenge(props) {
         setCode(props.challengeSelected.contents)
         setTestInfo(" //Test will shown here")
     }
-    // const goToForum = () => {
-    //     console.log("quan3");
-    // }
+
     return (
-        <div>
-            <Layout id="layout-main">
-                <ReflexContainer orientation="vertical">
-                    <ReflexElement className="left-pane">
-                        <Layout className="m-2" id="layout-content">
-                            <Header className="font-Roboto font-bold" id="title">{props.challengeSelected.title}</Header>
-                            <Content>
-                                <ReactMarkdown source={props.challengeSelected.description} escapeHtml={false} />
-                            </Content>
-                            {/* <br/> */}
-                            {props.challengeSelected.instructions == "" ? "" : <hr />}
-                            <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false}
-                                visible={props.challengeSelected.instructions == "" ? false : true} />
-                            {/* <br/> */}
-                            <hr />
-                            <br />
-                            <div className="grid grid-cols-3 gap-8">
-                                <button className="bg-transparent text-xl hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border-8 border-blue-500 hover:border-transparent rounded"
-                                    onClick={() => submitCode()}>
-                                    Submit code
-                                </button>
-                                <button className="bg-transparent text-xl hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border-8 border-blue-500 hover:border-transparent rounded"
-                                    onClick={() => resetCode()}>
-                                    Reset all code
-                                </button>
-                                <Link className="bg-transparent text-xl hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border-8 border-blue-500 hover:border-transparent rounded"
-                                    to={`/forum/` + props.challengeSelected.forumTopicId } >
-                                    Go to Forum
-                                </Link>
-                            </div>
-                        </Layout>
-                    </ReflexElement>
-                    <ReflexSplitter />
-                    <ReflexElement className="right-pane">
-                        <ReflexContainer orientation="horizontal">
-                            {/* <Layout id="layout-code"> */}
-                            <ReflexElement className="top-pannel" propagateDimensionsRate={200}
-                                propagateDimensions={true}
-                                flex={0.8}>
-                                <AceEditor
-                                    mode="javascript"
-                                    theme="terminal"
-                                    name="aceeditorContainer"
-                                    onChange={onChangeCode}
-                                    fontSize={16}
-                                    showPrintMargin={true}
-                                    showGutter={true}
-                                    highlightActiveLine={true}
-                                    value={code || ""}
-                                    setOptions={{
-                                        enableBasicAutocompletion: true,
-                                        enableLiveAutocompletion: true,
-                                        showLineNumbers: true,
-                                        tabSize: 4,
-                                    }} />
-                            </ReflexElement>
-                            <ReflexSplitter propagate={true} />
-                            <ReflexElement className="bottom-pane overflow-y-scroll test-area">
-                                <ReactMarkdown source={testInfo} escapeHtml={false} />
-                            </ReflexElement>
-                            {/* </Layout> */}
+        <ChallengeStyleWrapper>
+            <div>
+                <Layout id="layout-main">
+                    <ReflexContainer orientation="vertical">
+                        <ReflexElement className="left-pane">
+                            <Layout className="m-2" id="layout-content">
+                                <Header className="font-Roboto font-bold" id="title">{props.challengeSelected.title}</Header>
+                                <Content>
+                                    <ReactMarkdown source={props.challengeSelected.description} escapeHtml={false} />
+                                </Content>
+                                {/* <br/> */}
+                                {props.challengeSelected.instructions == "" ? "" : <hr />}
+                                <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false}
+                                               visible={props.challengeSelected.instructions == "" ? false : true} />
+                                {/* <br/> */}
+                                <hr />
+                                <br />
+                                <div className="grid grid-cols-3 gap-8">
+                                    <button className="btn-bottom-action"
+                                            onClick={() => submitCode()}>
+                                        Submit code
+                                    </button>
+                                    <button className="btn-bottom-action"
+                                            onClick={() => resetCode()}>
+                                        Reset all code
+                                    </button>
+                                    <Link className="btn-bottom-action"
+                                          to={`/forum/` + props.challengeSelected.forumTopicId } >
+                                        Go to Forum
+                                    </Link>
+                                </div>
+                            </Layout>
+                        </ReflexElement>
+                        <ReflexSplitter />
+                        <ReflexElement className="right-pane">
+                            <ReflexContainer orientation="horizontal">
+                                {/* <Layout id="layout-code"> */}
+                                <ReflexElement className="top-pannel" propagateDimensionsRate={200}
+                                               propagateDimensions={true}
+                                               flex={0.8}>
+                                    <AceEditor
+                                        mode="javascript"
+                                        theme="terminal"
+                                        name="aceeditorContainer"
+                                        onChange={onChangeCode}
+                                        fontSize={16}
+                                        showPrintMargin={true}
+                                        showGutter={true}
+                                        highlightActiveLine={true}
+                                        value={code || ""}
+                                        setOptions={{
+                                            enableBasicAutocompletion: true,
+                                            enableLiveAutocompletion: true,
+                                            showLineNumbers: true,
+                                            tabSize: 4,
+                                        }} />
+                                </ReflexElement>
+                                <ReflexSplitter propagate={true} />
+                                <ReflexElement className="bottom-pane overflow-y-scroll test-area">
+                                    <ReactMarkdown source={testInfo} escapeHtml={false} />
+                                </ReflexElement>
+                                {/* </Layout> */}
 
-                        </ReflexContainer>
-                    </ReflexElement>
-                </ReflexContainer>
-            </Layout>
-            <Modal
-                title="Passed the Test"
-                visible={modalVisible}
-                // onOk={handleSubmit}
-                onCancel={() => setModalVisible(false)}
-                // closable = {false}
-                footer={
-                    listChallengeIds.indexOf(challengeId) < listChallengeIds.length - 1 ?
-                        [
-                            <Link key="next" to={`/learn/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]} onClick={() => goToNextChallenge()}>
-                                Go to next challenge
-                            </Link>,
-                            <Button key="Download" type="primary" onClick={() => downloadCode()}>
-                                Download code
-                            </Button>
-                        ] :
-                        [
-                            <Link key="next" to={`/learn/`}>
-                                Go back learning page
-                            </Link>,
-                            <Button key="Download" type="primary" onClick={() => downloadCode()}>
-                                Download code
-                            </Button>
-                        ]
-                }
-            >
-                <p>{props.challengeSelected.title}</p>
+                            </ReflexContainer>
+                        </ReflexElement>
+                    </ReflexContainer>
+                </Layout>
+                <Modal
+                    title="Passed the Test"
+                    visible={modalVisible}
+                    // onOk={handleSubmit}
+                    onCancel={() => setModalVisible(false)}
+                    // closable = {false}
+                    footer={
+                        listChallengeIds.indexOf(challengeId) < listChallengeIds.length - 1 ?
+                            [
+                                <Link key="next" to={`/learn/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]} onClick={() => goToNextChallenge()}>
+                                    Go to next challenge
+                                </Link>,
+                                <Button key="Download" type="primary" onClick={() => downloadCode()}>
+                                    Download code
+                                </Button>
+                            ] :
+                            [
+                                <Link key="next" to={`/learn/`}>
+                                    Go back learning page
+                                </Link>,
+                                <Button key="Download" type="primary" onClick={() => downloadCode()}>
+                                    Download code
+                                </Button>
+                            ]
+                    }
+                >
+                    <p>{props.challengeSelected.title}</p>
 
-            </Modal>
-        </div>
+                </Modal>
+            </div>
+        </ChallengeStyleWrapper>
+
     );
 }
 const mapStateToProps = (state, ownProps) => {

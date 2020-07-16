@@ -5,6 +5,98 @@ import { Row, Col, message, Menu, Modal, Dropdown } from 'antd';
 import ReactMarkdown from 'react-markdown';
 import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
+import styled from "styled-components";
+import { Avatar } from 'antd';
+import {
+    CaretDownOutlined,
+    CaretUpOutlined, DownOutlined,
+    ProfileOutlined,
+    StarOutlined,
+    UpOutlined,
+    UserAddOutlined
+} from "@ant-design/icons";
+
+const TopicStyleWrapper=styled.div`
+        text-align:start;
+        .topic-name{
+           
+        }
+        
+        .topic-info{
+            color:#9b9b9b;
+            font-size:14px;
+        }
+        
+        .comment{
+           border-top: 1px solid #ddc8c8;
+        }
+        
+      
+        .tag{
+           
+            background-color: #e9e9ea;
+            border-color: #e9e9eb;
+            color: #909399;
+            font-size: 12px;
+            padding: 5px;
+            border-radius: 3px;
+            cursor:pointer;
+        }
+        
+        .author-name{
+            font-weight:bold;
+        }
+        
+        .author-avatar{
+            vertical-align:middle;
+        }
+        
+        .icon{
+             vertical-align:middle;
+        }
+        
+        .question-container{
+            
+        }
+        
+        .topic-header{
+            padding:10px 0;
+        }
+        
+        .share-question{
+            color:#909399;
+            font-weight:bold;
+            font-size:12px;
+            cursor:pointer;
+        }
+        
+        .reply-box{
+            border-top:1px solid;
+        }
+        
+        .btn-vote svg{
+            fill:#696969;
+        }
+        
+        .like-number{
+            font-size:1.2rem;
+        }
+        
+        .comment{
+            font-size:12px;
+        }
+        
+        .comment .comment-body{
+            font-size:14px;
+        }
+        
+        .comment-vote{
+            padding: 0 5px;
+            border-right: 2px solid #b3a8a8;
+        }
+        
+    
+`
 
 function Topic(props) {
     let { topicId } = useParams();
@@ -58,12 +150,11 @@ function Topic(props) {
         }
         const comment = {
             userId: props.userInfo,
-            content: reply
+            content: reply,
+            topicId: topic._id
         }
-        const data = {
-            comments: [...topic.comments, JSON.stringify(comment)]
-        }
-        callApiAsPromise('put', apiBaseUrl + 'topics/' + topic._id, null, JSON.stringify(data)).then(response => {
+        const data = JSON.stringify(comment)
+        callApiAsPromise('post', apiBaseUrl + 'comments/', null, data).then(response => {
             setTopic(response.data.value);
             setIsReply(false);
             setIsShowPreview(false);
@@ -149,107 +240,132 @@ function Topic(props) {
             message.error('Delete topic failed!')
         })
     }
+
+    const voteComment = (id) => {
+        callApiAsPromise('put', apiBaseUrl + `comments/${id}`, null, {likePeople:props.userInfo._id}).then(res => {
+            setForceRender(!forceRender);
+        }).catch((err) => {
+            message.error('Delete topic failed!')
+        })
+    }
+
     const linkToShare = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href) + "&amp;src=sdkpreparse";
 
     if (topic._id) {
         if (redirect) {
             return <Redirect to='/forum' />;
         }
-        const commentComponents = topic.comments.map((comment) => {
-            let parsedComment = JSON.parse(comment)
+        const commentComponents = topic.commentsObject&&topic.commentsObject.map((comment) => {
             return (
-                <Row className='comment p-2'>
-                    <Col span={2}>
-                        <div className="">
-                            <img className='h-8 w-10 md:h-12 md:w-12 mx-auto mt-2' src={parsedComment.userId.avater} alt='user avatar' />
-                        </div>
-                    </Col>
-                    <Col span={22} offset={0} className='text-left p-1'>
-                        <div className='pl-2'>
-                            <button className='pb-2 text-left text-white font-bold text-lg'>
-                                {parsedComment.userId.name}
-                            </button>
-                            <div className='text-left text-white font-medium text-base'>
-                                <ReactMarkdown height='200px' source={parsedComment.content} escapeHtml={false} />
+                <div className="flex flex-col my-3 p-2 comment">
+                    <div className="flex flex-row justify-between comment-header">
+                            <div className="w-4/12 py-3">
+                                <span><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /><a href="#">Thanh Dat</a></span>
                             </div>
-                            {/* <div className='float-right'>
-                                <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                >Share
-                                            </button>
-                                <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                    hidden={!topic.userId._id === props.userInfo._id}
-                                >Delete
-                                            </button>
-                                <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                    hidden={!topic.userId._id === props.userInfo._id}
-                                >Edit
-                                            </button>
-                                <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                    onClick={() => { setIsReply(true); }}
-                                >Reply
-                                            </button>
-                            </div> */}
-                        </div>
-                    </Col>
-                </Row>
+                            <div className="w-4/12 py-3 text-right">
+                                <span>Sep 25th, 2017 1:31 PM</span>
+                            </div>
+                    </div>
+                    <div className="comment-body">
+                        <ReactMarkdown height='200px' source={comment.content} escapeHtml={false} />
+                    </div>
+                    <div className="comment-footer flex flex-row">
+                            <div className="comment-vote">
+                                <button className="mr-1 " onClick={()=>voteComment(comment._id)}><UpOutlined /></button>
+                                <span>{comment.likePeople.length}</span>
+                            </div>
+                            <div>
+                                <button className="mx-1">Reply</button>
+                                <button className="mx-1">Share</button>
+                            </div>
+
+                    </div>
+
+                </div>
             )
 
         }
         )
         return (
-            <div className='topic-bg min-h-screen'>
-                <Row className='pt-4'>
-                    <Col span={12} offset={6}>
-                        <div className='text-left text-white font-bold text-2xl'>
-                            {topic.name}
+            <TopicStyleWrapper>
+                <div className='flex flex-col justify-center'>
+                    <div className="w-5/12 mx-auto p-4 border ">
+                        <div className="topic-header border-b-2">
+                            <div className="topic-name ">
+                                <h1 >
+                                    {topic.name}
+                                </h1>
+                            </div>
+                            <div className="tags">
+                                <span className='tag'>{topic.tags}</span>
+                            </div>
                         </div>
-                        <div>
-                            <span className='float-left m-1 px-1 text-black text-sm bg-yellow-400'>{topic.tags}</span>
-                        </div>
-                        <hr className='mt-8 border' />
 
-                        <Row className='question topic-question-bg p-2'>
-                            <Col span={2}>
-                                <div className="">
-                                    <img className='h-8 w-10 md:h-12 md:w-12 mx-auto mt-2' src={topic.userId.avater} alt='user avatar' />
+                        <div className="flex flex-col mt-8">
+                            <div className="topic-info">
+                                <div className="author-info flex flex-row">
+                                    <div className="w-1/12">
+                                        <div><Avatar className="author-avatar" src={topic.userId.avater} /></div>
+                                    </div>
+                                    <div className="w-8/12 text-left">
+                                        <div className="author-name">
+                                            <a href="#">{topic.userId.name}</a>
+                                        </div>
+                                        <div className="flex-row">
+                                            <span className="mr-3"><StarOutlined className="icon"/> 12</span>
+                                            <span className="mr-3"><UserAddOutlined className="icon" />5</span>
+                                            <span className="mr-3"><ProfileOutlined className="icon" />15</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </Col>
-                            <Col span={22} offset={0} className='text-left p-1'>
-                                <div className='pl-2'>
-                                    <button className='pb-2 text-left text-white font-bold text-lg'>
-                                        {topic.userId.name}
-                                    </button>
-                                    <div className='text-left text-white font-medium text-base'>
+                                <div className="article-info">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-row">
+                            <div className="w-1/12">
+                                <button className="btn-vote">
+                                    <svg aria-hidden="true" className="m0 svg-icon iconArrowUpLg" width="36" height="36"
+                                         viewBox="0 0 36 36">
+                                        <path d="M2 26h32L18 10 2 26z"></path>
+                                    </svg>
+                                </button>
+                                <div className="like-number">
+                                    <span>210</span>
+                                </div>
+                            </div>
+                            <div className="w-11/12 mt-3">
+                                <div className='question-container'>
+                                    <div className='question-detail'>
                                         <ReactMarkdown height='200px' source={topic.content} escapeHtml={false} />
                                     </div>
-                                    <div className='float-right'>
-                                        <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                        >Share
-                                        </button>
+                                    <div className='question-footer'>
                                         <div hidden = { process.env.mode !== 'PRODUCTION'} className="fb-share-button" data-href={window.location.href} data-layout="button" data-size="large"><a target="_blank" href= {linkToShare} className="fb-xfbml-parse-ignore">Chia sẻ</a></div>
                                         <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                            hidden={!isOwner}
-                                            onClick={() => { deleteTopic() }}
+                                                hidden={!isOwner}
+                                                onClick={() => { deleteTopic() }}
                                         >Delete
                                         </button>
                                         <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                            hidden={!isOwner}
-                                            onClick={() => showModal()}
+                                                hidden={!isOwner}
+                                                onClick={() => showModal()}
                                         >Edit
                                         </button>
-                                        <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
-                                            onClick={() => { openReplyBox(); }}
-                                        >Reply
-                                        </button>
+                                        <span className='share-question'
+                                              onClick={() => { openReplyBox(); }}
+                                        >Add a comment
+                                        </span>
                                     </div>
                                 </div>
-                            </Col>
-                        </Row>
+                            </div>
+                        </div>
 
-                        <hr />
-                        <Row className='reply-box mt-2 mb-12' hidden={!isReply}>
+
+                        <div className='reply-box mt-2 mb-12' hidden={!isReply}>
                             <TextareaAutosize
-                                className="markdown-block-area w-full p-4"
+                                className="markdown-block-area w-full p-4 mb-6"
                                 value={reply}
                                 placeholder="Reply. Use Markdown"
                                 onChange={(e) => setReply(e.target.value)} />
@@ -260,76 +376,77 @@ function Topic(props) {
                             </div>
                             <div className='float-right'>
                                 <button className='bg-red-500 hover:bg-red-700 rounded p-2 font-bold text-white mr-2'
-                                    onClick={() => setIsReply(false)}>
+                                        onClick={() => setIsReply(false)}>
                                     Cancel
                                 </button>
                                 <button className='bg-blue-500 hover:bg-blue-700 rounded p-2 font-bold text-white mr-2'
-                                    onClick={() => sendComment()}>
+                                        onClick={() => sendComment()}>
                                     Reply
                                 </button>
                             </div>
-                        </Row>
+                        </div>
 
-                        <Row className='preview-box mb-12' hidden={!(isReply && isShowPreview)}>
+                        <div className='preview-box mb-12' hidden={!(isReply && isShowPreview)}>
                             <div className="bg-white previous col-span-3 pt-3 px-2" overflow='scroll'>
                                 <ReactMarkdown height='400px' source={reply} escapeHtml={false} />
                             </div>
-                        </Row>
-
+                        </div>
                         {commentComponents}
-                    </Col>
-                </Row>
-                <Modal
-                    className='modal-new-topic'
-                    title="Create new topic"
-                    visible={modalVisible}
-                    // onOk={handleSubmit}
-                    onCancel={() => setModalVisible(false)}
-                    // closable = {false}
-                    footer={
-                        <div className=''>
-                            <button className='' onClick={() => { updateTopic() }}>
-                                Update Topic
-                        </button>
-                            <button className='' onClick={() => { hideModal() }}>
-                                Cancel
-                        </button>
-                        </div>
-                    }
-                >
-                    <div className="grid grid-cols-6 mb-1">
-                        <div className="markdown-block col-span-3">
-                            <input className='bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-sm py-2 px-4 block w-full appearance-none leading-normal' placeholder='Title'
-                                value={title} required onChange={(e) => { setTitle(e.target.value) }} />
-                        </div>
-                        <div className="col-span-3 px-2 ml-4">
-                            <Dropdown className='inline-block' overlay={menu}>
-                                <button className='bg-yellow-500 p-2 text-white font-bold'>
-                                    {tags}
-                                </button>
-                            </Dropdown>
-                            <input className='inline-block adasbg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-sm py-2 px-4 block appearance-none leading-normal' placeholder='challenge id'
-                                value={challengeId} required onChange={(e) => { setChallengeId(e.target.value) }} hidden={!(tags === 'challenge')} />
-                        </div>
-                    </div>
-                    <div> Use <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>Markdown</a></div>
-                    <div className="description grid grid-cols-6">
-                        <div className="markdown-block col-span-3">
-                            <TextareaAutosize
-                                required
-                                className="markdown-block-area w-full p-4"
-                                width='1600'
-                                value={contentNewTopic}
-                                placeholder="Type here. Use Markdown"
-                                onChange={(e) => setContentNewTopic(e.target.value)} />
-                        </div>
-                        <div className="previous col-span-3 pt-3 px-2" overflow='scroll'>
-                            <ReactMarkdown height='200px' source={contentNewTopic} escapeHtml={false} />
-                        </div>
                     </div>
 
-                </Modal>
-            </div>
+                    <Modal
+                        className='modal-new-topic'
+                        title="Create new topic"
+                        visible={modalVisible}
+                        // onOk={handleSubmit}
+                        onCancel={() => setModalVisible(false)}
+                        // closable = {false}
+                        footer={
+                            <div className=''>
+                                <button className='' onClick={() => { updateTopic() }}>
+                                    Update Topic
+                                </button>
+                                <button className='' onClick={() => { hideModal() }}>
+                                    Cancel
+                                </button>
+                            </div>
+                        }
+                    >
+                        <div className="grid grid-cols-6 mb-1">
+                            <div className="markdown-block col-span-3">
+                                <input className='bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-sm py-2 px-4 block w-full appearance-none leading-normal' placeholder='Title'
+                                       value={title} required onChange={(e) => { setTitle(e.target.value) }} />
+                            </div>
+                            <div className="col-span-3 px-2 ml-4">
+                                <Dropdown className='inline-block' overlay={menu}>
+                                    <button className='bg-yellow-500 p-2 text-white font-bold'>
+                                        {tags}
+                                    </button>
+                                </Dropdown>
+                                <input className='inline-block adasbg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-sm py-2 px-4 block appearance-none leading-normal' placeholder='challenge id'
+                                       value={challengeId} required onChange={(e) => { setChallengeId(e.target.value) }} hidden={!(tags === 'challenge')} />
+                            </div>
+                        </div>
+                        <div> Use <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>Markdown</a></div>
+                        <div className="description grid grid-cols-6">
+                            <div className="markdown-block col-span-3">
+                                <TextareaAutosize
+                                    required
+                                    className="markdown-block-area w-full p-4"
+                                    width='1600'
+                                    value={contentNewTopic}
+                                    placeholder="Type here. Use Markdown"
+                                    onChange={(e) => setContentNewTopic(e.target.value)} />
+                            </div>
+                            <div className="previous col-span-3 pt-3 px-2" overflow='scroll'>
+                                <ReactMarkdown height='200px' source={contentNewTopic} escapeHtml={false} />
+                            </div>
+                        </div>
+
+                    </Modal>
+                </div>
+            </TopicStyleWrapper>
+
         );
     }
     return (

@@ -20,6 +20,7 @@ import parseMD from 'parse-md'
 import marked from 'marked'
 
 import { useParams, useRouteMatch, Link } from 'react-router-dom';
+import styled from "styled-components";
 
 const ReactMarkdown = require('react-markdown')
 
@@ -85,7 +86,7 @@ function LearnPage(props) {
         <div>
             <Layout id="layout-main">
                 <Sider>
-                    <Row className="font-Roboto font-bold p-5 h-10">
+                    <Row className="font-bold p-5 h-10">
                         Lessons
                     </Row>
                     <Link key="1" to={`${url}/rendering`}>

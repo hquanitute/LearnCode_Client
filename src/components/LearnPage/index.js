@@ -4,11 +4,71 @@ import { connect } from 'react-redux';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 import '../../style/css/learn.css';
-import { setChallengeSelectedAction } from './../../actions/challengesAction';
+import {setChallengeSelectedAction, setLessons} from './../../actions/challengesAction';
+import styled from "styled-components";
 
 const quotes = require('../../api/quotes.json');
 
 const { Panel } = Collapse;
+
+const LearnPageWrapper=styled.div`
+    background-color:#292929;
+    color:#ece0c9;
+    a{
+         color:#ece0c9;
+    }
+    a:hover{
+        color:#fff;
+    }
+    .nav-item{
+        font-size:16px;
+        font-weight:bold;
+    }
+    
+    .challenge-item{
+        color:black;
+    }
+    
+    .challenge-item:hover{
+        color:#1538c2;
+    }
+    
+    .course{
+        box-shadow: 0 6px 16px 0 rgba(0,0,0,.2);
+        margin: 30px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 30px;
+        min-height: 183px;
+        cursor:pointer;
+        background: #fff;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    
+    .course:hover{
+        box-shadow:0 4px 12px 0 rgba(0,0,0,.15);
+    }
+ 
+    .course-title{
+         font-weight:bold;
+         font-size:1.3em;
+         max-height: 72.8px;
+         color: #0e141e;
+    }
+    
+    .btn-start-course{
+        border:1px solid green;
+        padding:5px;
+        color:green;
+        font-weight:bold;
+    }
+    
+    
+`
 function LearnPage(props) {
     let { path, url } = useRouteMatch();
     useEffect(() => {
@@ -21,27 +81,24 @@ function LearnPage(props) {
 
     const welcomeComponent = props.userInfo._id ? (
         <div className=''>
-            <h1 className="mt-4">Welcome back, {props.userInfo.name}</h1>
-
+            <h1 className="mt-4 font-bold">Welcome back, {props.userInfo.name}</h1>
         </div>
     ) : (
-            <div className=''>
-                <h1 className="mt-4">Welcome to Learn Code</h1>
-                <h2 className="mt-4">Learn Code everywhere</h2>
-                <h2 className="my-4">Build your code</h2>
-                <a className='w-full h-12 border-4 border-solid border-gray-900 bg-gray-400 hover:bg-gray-900 text-gray-900 font-extrabold hover:text-white py-2 px-4'
+            <div className='row mt-4'>
+                <a className='btn-login'
                     href={process.env.REACT_APP_GOOGLE} > Login with Google </a>
             </div>
         )
     const quotesComponents = (
         <div className='my-12'>
-            <h1 className="mt-4 font-sans text-xl text-gray-400 text-center">{quotes[Math.floor(Math.random() * quotes.length)].text}</h1>
+            <h1 className="mt-4  text-xl text-center">{quotes[Math.floor(Math.random() * quotes.length)].text}</h1>
             <br />
-            <i className='text-gray-400'>--- {quotes[Math.floor(Math.random() * quotes.length)].author} ---</i>
+            <i className='text-gray-600'>--- {quotes[Math.floor(Math.random() * quotes.length)].author} ---</i>
         </div>
     )
 
     const listPractice = props.userInfo._id ? (
+        <>
         <div className=''>
                 {
                     (props.courses || []).map((course, index) => (
@@ -53,21 +110,18 @@ function LearnPage(props) {
                                             <Panel className='panelCustom' header={lesson.name} key={indexLesson}>
                                                 {
                                                     (lesson.challenges || []).map(challenge => {
-                                                        console.log(props.userInfo.listChallengeIdPassed);
-                                                        console.log(challenge._id);
-                                                        
                                                         if(props.userInfo.listChallengeIdPassed.includes(challenge._id)){
                                                             return (
                                                                 <Row key={challenge._id} className=''>
                                                                     <span className='float-left  my-1 p-2'><i class="fa fa-check-circle"></i></span>
-                                                                    <Link className='challenge float-left text-black m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
+                                                                    <Link className='challenge-item float-left  m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
                                                                 </Row>
                                                             )
                                                         } else return (
                                                             (
                                                                 <Row key={challenge._id} className=''>
                                                                     <span className='float-left  my-1 p-2'><i class="fa fa-arrow-right"></i></span>
-                                                                    <Link className='challenge float-left text-black m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
+                                                                    <Link className='challenge-item float-left  m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
                                                                 </Row>
                                                             )
                                                         )
@@ -82,6 +136,20 @@ function LearnPage(props) {
                     ))
                 }
             </div>
+
+        <div className="flex flex-row">
+            {
+                (props.courses || []).map((course, index) => (
+                    <Link className="course w-3/12 " to={`${url}/${course._id}/lesson` } onClick={e=>props.setLessons(course.lessons)}>
+                        <h3 className="course-title text-left" key={index}>{course.name}</h3>
+                        <button className="btn-start-course mr-auto">Get Started</button>
+                    </Link>
+                ))
+            }
+
+        </div>
+            </>
+
     ) : (
             <div className=''>
                 {
@@ -111,14 +179,15 @@ function LearnPage(props) {
             </div>
         )
     return (
-        <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
-            <div className='md:col-span-8 md:col-start-3'>
-                {welcomeComponent}
-                {quotesComponents}
-                {listPractice}
+        <LearnPageWrapper>
+            <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
+                <div className='md:col-span-8 md:col-start-3'>
+                    {welcomeComponent}
+                    {quotesComponents}
+                    {listPractice}
+                </div>
             </div>
-        </div>
-
+        </LearnPageWrapper>
     );
 }
 const mapStateToProps = (state, ownProps) => {
@@ -132,6 +201,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         setChallengeSelected: (idChallenge) => {
             dispatch(setChallengeSelectedAction(idChallenge))
+        },
+        setLessons:(lsLession)=>{
+            dispatch(setLessons(lsLession))
         }
     }
 }
