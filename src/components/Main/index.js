@@ -106,8 +106,8 @@ function Main(props) {
                             <Route exact path="/" children={<Home />} />
                             <Route exact path="/learn" children={<LearnPage />} />
                             <Route exact path="/learn/:course/lesson" children={<LessonPage />} />
-                            <Route exact path="/learn/:courseId/lesson/:lessonId" children={<ChallengesPage />} />
-                            <Route path={`/learn/:challengeId`} children={<Challenge />} />
+                            <Route exact path="/learn/:courseId/lesson/:lessonId/challenges" children={<ChallengesPage />} />
+                            <Route path={`/learn/:courseId/lesson/:lessonId/challenges/:challengeId`} children={<Challenge />} />
                             <Route exact path="/forum" children={<Forum />} />
                             <Route path={`/forum/:topicId`} children={<Topic />} />
                             <Route path="/user">

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import styled from "styled-components";
 import {setChallenges, setLessons} from "../../actions/challengesAction";
-import {Link,useRouteMatch} from "react-router-dom";
+import {Link,useRouteMatch,withRouter} from "react-router-dom";
 
 
 
@@ -64,36 +64,56 @@ const LessonPageWrapper=styled.div`
 
 `
 function LessonPage(props) {
-    let { path, url } = useRouteMatch();
+    let {match, path, url } = useRouteMatch();
+
+    useEffect(()=>{
+        if(!props.challengeSelected.lessons){
+            (props.courses||0).forEach((course)=>{
+                if(course._id===props.match.params.course){
+                     props.setLessons(course.lessons);
+                }
+            })
+
+        }
+    },[props.courses])
+
 
     return (
         <LessonPageWrapper>
-            <div className="flex flex-row">
-             {(props.challengeSelected.lessons || []).map((lesson, indexLesson) => (
-                 <Link className="lesson-wrapper w-3/12" to={`${url}/${lesson._id}` } onClick={e=>props.setChallenges(lesson.challenges)}>
-                    <div className="">
-                         <span className="number-challenge">{lesson.challenges&&lesson.challenges.length}</span>
-                         <div className="lesson ">
-                               <p className="lesson-title">{lesson.name}</p>
-                               <button className="lesson-btn">See Challenge</button>
+        <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
+                        <div className='md:col-span-8 md:col-start-3'>
+                          <div className="flex flex-row">
+                                     {(props.challengeSelected.lessons || []).map((lesson, indexLesson) => (
+                                         <Link className="lesson-wrapper w-4/12" to={`${url}/${lesson._id}/challenges` } onClick={e=>props.setChallenges(lesson.challenges)}>
+                                            <div className="">
+                                                 <span className="number-challenge">{lesson.challenges&&lesson.challenges.length}</span>
+                                                 <div className="lesson ">
+                                                       <p className="lesson-title">{lesson.name}</p>
+                                                       <button className="lesson-btn">See Challenge</button>
+                                                </div>
+                                            </div>
+                                         </Link>
+                                        ))}
+                          </div>
                         </div>
-                    </div>
-                 </Link>
-                ))}
-            </div>
+         </div>
         </LessonPageWrapper>
     );
 }
 const mapStateToProps = (state, ownProps) => {
     return {
-        challengeSelected: state.challengeSelected
+        challengeSelected: state.challengeSelected,
+        courses: state.courses
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         setChallenges:(challenges)=>{
             dispatch(setChallenges(challenges))
-        }
+        },
+         setLessons:(lsLession)=>{
+                    dispatch(setLessons(lsLession))
+         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(LessonPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LessonPage));

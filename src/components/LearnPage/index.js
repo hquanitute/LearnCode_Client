@@ -1,7 +1,7 @@
-import { Collapse, Row } from 'antd';
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Link, useRouteMatch } from 'react-router-dom';
+import {Collapse, Row} from 'antd';
+import React, {useEffect} from 'react';
+import {connect} from 'react-redux';
+import {Link, useRouteMatch} from 'react-router-dom';
 
 import '../../style/css/learn.css';
 import {setChallengeSelectedAction, setLessons} from './../../actions/challengesAction';
@@ -9,9 +9,9 @@ import styled from "styled-components";
 
 const quotes = require('../../api/quotes.json');
 
-const { Panel } = Collapse;
+const {Panel} = Collapse;
 
-const LearnPageWrapper=styled.div`
+const LearnPageWrapper = styled.div`
     background-color:#292929;
     color:#ece0c9;
     a{
@@ -69,8 +69,9 @@ const LearnPageWrapper=styled.div`
     
     
 `
+
 function LearnPage(props) {
-    let { path, url } = useRouteMatch();
+    let {path, url} = useRouteMatch();
     useEffect(() => {
 
     }, [])
@@ -84,100 +85,35 @@ function LearnPage(props) {
             <h1 className="mt-4 font-bold">Welcome back, {props.userInfo.name}</h1>
         </div>
     ) : (
-            <div className='row mt-4'>
-                <a className='btn-login'
-                    href={process.env.REACT_APP_GOOGLE} > Login with Google </a>
-            </div>
-        )
+        <div className='row mt-4'>
+            <a className='btn-login'
+               href={process.env.REACT_APP_GOOGLE}> Login with Google </a>
+        </div>
+    )
     const quotesComponents = (
         <div className='my-12'>
             <h1 className="mt-4  text-xl text-center">{quotes[Math.floor(Math.random() * quotes.length)].text}</h1>
-            <br />
+            <br/>
             <i className='text-gray-600'>--- {quotes[Math.floor(Math.random() * quotes.length)].author} ---</i>
         </div>
     )
 
-    const listPractice = props.userInfo._id ? (
+    const listPractice =
         <>
-        <div className=''>
+            <div className="flex flex-row">
                 {
                     (props.courses || []).map((course, index) => (
-                        <Collapse defaultActiveKey={['0']}>
-                            <Panel className='panelCustom' header={course.name} key={index}>
-                                {
-                                    (course.lessons || []).map((lesson, indexLesson) => (
-                                        <Collapse defaultActiveKey={['0']}>
-                                            <Panel className='panelCustom' header={lesson.name} key={indexLesson}>
-                                                {
-                                                    (lesson.challenges || []).map(challenge => {
-                                                        if(props.userInfo.listChallengeIdPassed.includes(challenge._id)){
-                                                            return (
-                                                                <Row key={challenge._id} className=''>
-                                                                    <span className='float-left  my-1 p-2'><i class="fa fa-check-circle"></i></span>
-                                                                    <Link className='challenge-item float-left  m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
-                                                                </Row>
-                                                            )
-                                                        } else return (
-                                                            (
-                                                                <Row key={challenge._id} className=''>
-                                                                    <span className='float-left  my-1 p-2'><i class="fa fa-arrow-right"></i></span>
-                                                                    <Link className='challenge-item float-left  m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
-                                                                </Row>
-                                                            )
-                                                        )
-                                                    })
-                                                }
-                                            </Panel>
-                                        </Collapse>
-                                    ))
-                                }
-                            </Panel>
-                        </Collapse>
+                        <Link className="course w-3/12 " to={`${url}/${course._id}/lesson`}
+                              onClick={e => props.setLessons(course.lessons)}>
+                            <h3 className="course-title text-left" key={index}>{course.name}</h3>
+                            <button className="btn-start-course mr-auto">Get Started</button>
+                        </Link>
                     ))
                 }
             </div>
+        </>
 
-        <div className="flex flex-row">
-            {
-                (props.courses || []).map((course, index) => (
-                    <Link className="course w-3/12 " to={`${url}/${course._id}/lesson` } onClick={e=>props.setLessons(course.lessons)}>
-                        <h3 className="course-title text-left" key={index}>{course.name}</h3>
-                        <button className="btn-start-course mr-auto">Get Started</button>
-                    </Link>
-                ))
-            }
 
-        </div>
-            </>
-
-    ) : (
-            <div className=''>
-                {
-                    (props.courses || []).map((course, index) => (
-                        <Collapse defaultActiveKey={['0']}>
-                            <Panel className='panelCustom' header={course.name} key={index}>
-                                {
-                                    (course.lessons || []).map((lesson, indexLesson) => (
-                                        <Collapse defaultActiveKey={['0']}>
-                                            <Panel className='panelCustom' header={lesson.name} key={indexLesson}>
-                                                {
-                                                    (lesson.challenges || []).map(challenge => (
-                                                        <Row key={challenge._id} className=''>
-                                                            <span className='float-left  my-1 p-2'><i class="fa fa-arrow-right"></i></span>
-                                                            <Link className='challenge float-left text-black m-1 p-2 inline-flex' to={`${url}/` + challenge._id} onClick={() => chooseChallenge(challenge._id)}>{challenge.title}</Link> <br />
-                                                        </Row>
-                                                    ))
-                                                }
-                                            </Panel>
-                                        </Collapse>
-                                    ))
-                                }
-                            </Panel>
-                        </Collapse>
-                    ))
-                }
-            </div>
-        )
     return (
         <LearnPageWrapper>
             <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
@@ -190,6 +126,7 @@ function LearnPage(props) {
         </LearnPageWrapper>
     );
 }
+
 const mapStateToProps = (state, ownProps) => {
     return {
         courses: state.courses,
@@ -202,7 +139,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setChallengeSelected: (idChallenge) => {
             dispatch(setChallengeSelectedAction(idChallenge))
         },
-        setLessons:(lsLession)=>{
+        setLessons: (lsLession) => {
             dispatch(setLessons(lsLession))
         }
     }
