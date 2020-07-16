@@ -6,6 +6,12 @@ const challengeSelectedReducer = (state = initlesson, action) => {
         case "GET_CHALLENGES_BY_ID":
             state =action.data;
             break;
+        case "SET_LESSONS":
+            state = {...state, lessons: action.data};
+            break;
+        case "SET_CHALLENGES":
+            state = {...state, challenges: action.data};
+            break;
     }
     return state;
 }
