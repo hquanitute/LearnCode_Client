@@ -1,4 +1,5 @@
 import { callApiAsPromise, apiBaseUrl } from "../api";
+import { trackPromise  } from 'react-promise-tracker';
 
 export function getForumAction(option){
     let limit = 5;
@@ -10,11 +11,11 @@ export function getForumAction(option){
     
     const request = callApiAsPromise("GET", apiBaseUrl + '/topics?limit='+limit+'&tags='+queryTags, null, null )
     return dispatch =>
-        request.then(response =>
+        trackPromise(request.then(response =>
             dispatch({
                 data: response.data.content,
                 type: "GET_FORUM"
             })
-        );
+        ));
 }
 

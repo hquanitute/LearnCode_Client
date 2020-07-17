@@ -19,12 +19,15 @@ import { callApiAsPromise, apiBaseUrl } from '../../api';
 import '../../style/css/learn.css';
 import { updateUser } from '../../actions/userAction';
 import styled from "styled-components";
+import {trackPromise, usePromiseTracker} from "react-promise-tracker";
+import ThreeDots from "../Loader/ThreeDots";
 
 const ReactMarkdown = require('react-markdown')
 const { Header, Content } = Layout;
 
 const ChallengeStyleWrapper=styled.div`
     padding:20px 0;
+    background-color: #f0f2f5;
     .btn-bottom-action{
         background-color: while;
         border: 1px solid;
@@ -37,6 +40,11 @@ const ChallengeStyleWrapper=styled.div`
         background-color: #292929;
         color: #fff;
     }
+    
+    .code-area{
+        border-radius: 5px;
+        box-shadow: 0 6px 16px 0 rgba(0,0,0,.2);
+    }
 `
 
 
@@ -46,6 +54,7 @@ function Challenge(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [listChallengeIds, setListChallengeIds] = useState([]);
     const [testInfo, setTestInfo] = useState("//Test will shown here");
+    const { promiseInProgress } = usePromiseTracker();
 
     useEffect(() => {
         props.setChallengeSelected(challengeId)
@@ -114,9 +123,7 @@ function Challenge(props) {
                 "code": "string"
             }
         }
-        callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
-        console.log(props.userInfo);
-
+        trackPromise(callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
             if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage === props.challengeSelected.runResult) {
                 console.log(response.data.successMessage.successComplieMessage);
                 console.log(props.challengeSelected.runResult);
@@ -139,7 +146,7 @@ function Challenge(props) {
                     '<br/> <br/>' +
                     response.data.errorMessage.errorComplieMessage)
             }
-        })
+        }))
     }
     const resetCode = () => {
         setCode(props.challengeSelected.contents)
@@ -184,7 +191,7 @@ function Challenge(props) {
                         <ReflexElement className="right-pane">
                             <ReflexContainer orientation="horizontal">
                                 {/* <Layout id="layout-code"> */}
-                                <ReflexElement className="top-pannel" propagateDimensionsRate={200}
+                                <ReflexElement className="top-pannel code-area" propagateDimensionsRate={200}
                                                propagateDimensions={true}
                                                flex={0.8}>
                                     <AceEditor
@@ -206,10 +213,8 @@ function Challenge(props) {
                                 </ReflexElement>
                                 <ReflexSplitter propagate={true} />
                                 <ReflexElement className="bottom-pane overflow-y-scroll test-area">
-                                    <ReactMarkdown source={testInfo} escapeHtml={false} />
+                                    {promiseInProgress&&<ThreeDots/>||<ReactMarkdown source={testInfo} escapeHtml={false} />}
                                 </ReflexElement>
-                                {/* </Layout> */}
-
                             </ReflexContainer>
                         </ReflexElement>
                     </ReflexContainer>
