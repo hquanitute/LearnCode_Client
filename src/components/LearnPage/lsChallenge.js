@@ -76,7 +76,7 @@ function ChallengesPage(props) {
                                                 <small>Time:30</small>
                                             </div>
                                         </div>
-                                        {props.userInfo.listChallengeIdPassed.includes(challenge._id)&&(
+                                        {props.userInfo.listChallengeIdPassed && props.userInfo.listChallengeIdPassed.includes(challenge._id)&&(
                                             <button className="btn-solve solved">
                                                 Solved
                                             </button>
