@@ -6,6 +6,8 @@ import {Link, useRouteMatch} from 'react-router-dom';
 import '../../style/css/learn.css';
 import {setChallengeSelectedAction, setLessons} from './../../actions/challengesAction';
 import styled from "styled-components";
+import {usePromiseTracker} from "react-promise-tracker";
+import ThreeDots from "../Loader/ThreeDots";
 
 const quotes = require('../../api/quotes.json');
 
@@ -72,6 +74,7 @@ const LearnPageWrapper = styled.div`
 
 function LearnPage(props) {
     let {path, url} = useRouteMatch();
+    const { promiseInProgress } = usePromiseTracker();
     useEffect(() => {
 
     }, [])
@@ -120,7 +123,7 @@ function LearnPage(props) {
                 <div className='md:col-span-8 md:col-start-3'>
                     {welcomeComponent}
                     {quotesComponents}
-                    {listPractice}
+                    {promiseInProgress&&<ThreeDots/>||listPractice}
                 </div>
             </div>
         </LearnPageWrapper>

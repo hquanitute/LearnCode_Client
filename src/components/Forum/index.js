@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { connect } from 'react-redux';
-import { Avatar } from 'antd';
-import { EyeOutlined,CommentOutlined, PushpinOutlined } from '@ant-design/icons';
-import { getForumAction } from '../../actions/forumAction';
-import { Link } from 'react-router-dom';
-import { Modal, Dropdown, Menu, message } from 'antd';
-import banner_bg from "../../asset/img/svg/page.svg"
+import {connect} from 'react-redux';
+import {Avatar, Dropdown, Menu, message, Modal} from 'antd';
+import {CommentOutlined, EyeOutlined, PushpinOutlined} from '@ant-design/icons';
+import {getForumAction} from '../../actions/forumAction';
+import {Link} from 'react-router-dom';
 import banner_img from "../../asset/img/learn.png"
 // const ReactMarkdown = require('react-markdown')
 import * as ReactMarkdown from 'react-markdown'
-import { callApiAsPromise, apiBaseUrl } from '../../api';
+import {apiBaseUrl, callApiAsPromise} from '../../api';
+import {usePromiseTracker} from 'react-promise-tracker';
 import styled from "styled-components";
+import ThreeDots from "../Loader/ThreeDots";
+import {covertMillisecondToDate, DATE_FORMAT} from "../../util/dateUtils";
 
 require('./style.css')
 
@@ -23,6 +24,13 @@ const ForumStyleWrapper=styled.div`
             border-bottom: 1px solid #d6d6d7;
             padding:15px 0;
     }
+    
+    .topic:hover{
+        .name-topic{
+             color:#5488c7;
+        }
+        display:block;
+    }
 
     .menu-container{
         display:flex;
@@ -33,19 +41,30 @@ const ForumStyleWrapper=styled.div`
     }
     
     .menu-item{
-        color: #fff;
+        color: #fff;  
         font-size: 13px;;
         font-weight: bold;
         text-transform: uppercase;
+        position:relative;
     }
     
-    .menu-item:hover:after{
-        width: 100%;
-        height: 2px;
-        content: "";
-        display: block;
-        background-color: #fff;
+    .menu-item::before{
+       content: "";
+       position: absolute;
+       width: 0%;
+       height: 1px;
+       top: 20px;
+       background-color: white;
+       transition: width 0.5s;
     }
+    
+    .menu-item:hover{
+        ::before{
+            width:100%;
+        }
+    }
+    
+   
     
     .name-topic{
          color:#292b2c;
@@ -108,9 +127,10 @@ function Forum(props) {
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState('general')
     const [challengeId, setChallengeId] = useState('');
+    const { promiseInProgress } = usePromiseTracker();
 
     useEffect(() => {
-        props.getForum({ limit: 5, tags: '' })
+            props.getForum({ limit: 5, tags: '' })
     }, [])
 
     const chooseCategory = (name) => {
@@ -158,12 +178,13 @@ function Forum(props) {
     }
     let listTopics = props.forum ? props.forum.map((topic) => (
         <div className='flex flex-row justify-start topic'>
+            {console.log(topic)}
             <div className="w-11/12 flex flex-row">
                 <Avatar className="avatar">U</Avatar>
                 <div className="flex-col w-full">
                     <div className="info-topic">
                         <a href="#" className="author-name mr-auto">Davis Dat</a>
-                        <span className="ml-auto">about 11 hours ago</span>
+                        <span className="ml-auto">{covertMillisecondToDate(topic.timestamp,DATE_FORMAT)}</span>
                     </div>
                     <Link to={'/forum/' + topic._id} className="name-topic">
                         {topic.name}
@@ -172,8 +193,8 @@ function Forum(props) {
                         {topic.tags.map((tag) => (<span className='topic-category'>{tag}</span>))}
                     </div>
                     <div className="status-topic mt-4">
-                        <span  className="mr-3"><EyeOutlined className="icon" /><span> 30</span></span>
-                        <span className="mr-3"><CommentOutlined className="icon" /><span>{topic.comments&&topic.comments.length||0}</span></span>
+                        <span  className="mr-3"><EyeOutlined className="icon" /><span>{Math.floor(Math.random() * 101)}</span></span>
+                        <span className="mr-3"><CommentOutlined className="icon" /><span>{topic.commentsObject&&topic.commentsObject.length||0}</span></span>
                         <span className="mr-3"><PushpinOutlined className="icon" /><span> 0</span></span>
                     </div>
                 </div>
@@ -237,7 +258,7 @@ function Forum(props) {
                 </div>
                 <br />
                 <div className='justify-center w-1/2 text-left text-lg  p-2 m-auto'>
-                    {listTopics}
+                    {promiseInProgress&&<ThreeDots/>||listTopics}
                 </div>
                 <Modal
                     className='modal-new-topic'

@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect} from 'react';
+import {connect} from 'react-redux';
 
 import styled from "styled-components";
 import {setChallenges, setLessons} from "../../actions/challengesAction";
-import {Link,useRouteMatch,withRouter} from "react-router-dom";
+import {Link, useRouteMatch, withRouter} from "react-router-dom";
+import {usePromiseTracker} from "react-promise-tracker";
+import ThreeDots from "../Loader/ThreeDots";
 
 
-
-
-const LessonPageWrapper=styled.div`
+const LessonPageWrapper = styled.div`
 
     .lesson{
         box-shadow: 0 6px 16px 0 rgba(0,0,0,.2);
@@ -63,43 +63,48 @@ const LessonPageWrapper=styled.div`
 
 
 `
-function LessonPage(props) {
-    let {match, path, url } = useRouteMatch();
 
-    useEffect(()=>{
-        if(!props.challengeSelected.lessons){
-            (props.courses||0).forEach((course)=>{
-                if(course._id===props.match.params.course){
-                     props.setLessons(course.lessons);
+function LessonPage(props) {
+    let {match, path, url} = useRouteMatch();
+    const {promiseInProgress} = usePromiseTracker();
+
+    useEffect(() => {
+        if (!props.challengeSelected.lessons) {
+            (props.courses || 0).forEach((course) => {
+                if (course._id === props.match.params.course) {
+                    props.setLessons(course.lessons);
                 }
             })
 
         }
-    },[props.courses])
+    }, [props.courses])
 
 
     return (
         <LessonPageWrapper>
-        <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
-                        <div className='md:col-span-8 md:col-start-3'>
-                          <div className="flex flex-row">
-                                     {(props.challengeSelected.lessons || []).map((lesson, indexLesson) => (
-                                         <Link className="lesson-wrapper w-4/12" to={`${url}/${lesson._id}/challenges` } onClick={e=>props.setChallenges(lesson.challenges)}>
-                                            <div className="">
-                                                 <span className="number-challenge">{lesson.challenges&&lesson.challenges.length}</span>
-                                                 <div className="lesson ">
-                                                       <p className="lesson-title">{lesson.name}</p>
-                                                       <button className="lesson-btn">See Challenge</button>
-                                                </div>
-                                            </div>
-                                         </Link>
-                                        ))}
-                          </div>
-                        </div>
-         </div>
+            {promiseInProgress && <ThreeDots/> || <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
+                <div className='md:col-span-8 md:col-start-3'>
+                    <div className="flex flex-row">
+                        {(props.challengeSelected.lessons || []).map((lesson, indexLesson) => (
+                            <Link className="lesson-wrapper w-4/12" to={`${url}/${lesson._id}/challenges`}
+                                  onClick={e => props.setChallenges(lesson.challenges)}>
+                                <div className="">
+                                    <span
+                                        className="number-challenge">{lesson.challenges && lesson.challenges.length}</span>
+                                    <div className="lesson ">
+                                        <p className="lesson-title">{lesson.name}</p>
+                                        <button className="lesson-btn">See Challenge</button>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </div>}
         </LessonPageWrapper>
     );
 }
+
 const mapStateToProps = (state, ownProps) => {
     return {
         challengeSelected: state.challengeSelected,
@@ -108,12 +113,12 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        setChallenges:(challenges)=>{
+        setChallenges: (challenges) => {
             dispatch(setChallenges(challenges))
         },
-         setLessons:(lsLession)=>{
-                    dispatch(setLessons(lsLession))
-         }
+        setLessons: (lsLession) => {
+            dispatch(setLessons(lsLession))
+        }
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LessonPage));

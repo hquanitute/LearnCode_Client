@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Redirect } from 'react-router-dom';
-import { callApiAsPromise, apiBaseUrl } from '../../api';
-import { Row, Col, message, Menu, Modal, Dropdown } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Redirect, useParams} from 'react-router-dom';
+import {apiBaseUrl, callApiAsPromise} from '../../api';
+import {Avatar, Dropdown, Menu, message, Modal} from 'antd';
 import ReactMarkdown from 'react-markdown';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import styled from "styled-components";
-import { Avatar } from 'antd';
-import {
-    CaretDownOutlined,
-    CaretUpOutlined, DownOutlined,
-    ProfileOutlined,
-    StarOutlined,
-    UpOutlined,
-    UserAddOutlined
-} from "@ant-design/icons";
+import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
+import {ProfileOutlined, StarOutlined, UpOutlined, UserAddOutlined} from "@ant-design/icons";
+import ThreeDots from "../Loader/ThreeDots";
 
 const TopicStyleWrapper=styled.div`
         text-align:start;
@@ -108,6 +102,7 @@ function Topic(props) {
     const [isReply, setIsReply] = useState(false);
     const [isShowPreview, setIsShowPreview] = useState(false);
     const [forceRender, setForceRender] = useState(false);
+    const { promiseInProgress } = usePromiseTracker();
 
     // Modal edit topic 
     const [modalVisible, setModalVisible] = useState(false);
@@ -117,6 +112,7 @@ function Topic(props) {
     const [challengeId, setChallengeId] = useState('');
 
     useEffect(() => {
+        trackPromise(
         callApiAsPromise('get', apiBaseUrl + 'topics/' + topicId, null, null).then(response => {
             setTopic(response.data.content)
             setContentNewTopic(response.data.content.content)
@@ -127,9 +123,10 @@ function Topic(props) {
             }
         }).catch(error => {
             alert(error);
-        })
+        }))
     }, [forceRender])
     useEffect(() => {
+        trackPromise(
         callApiAsPromise('get', apiBaseUrl + 'topics/' + topicId, null, null).then(response => {
             setTopic(response.data.content)
             setContentNewTopic(response.data.content.content)
@@ -140,7 +137,7 @@ function Topic(props) {
             }
         }).catch(error => {
             alert(error);
-        })
+        }))
     }, [])
 
     const sendComment = () => {
@@ -287,7 +284,7 @@ function Topic(props) {
         }
         )
         return (
-            <TopicStyleWrapper>
+            promiseInProgress&&<ThreeDots/>||<TopicStyleWrapper>
                 <div className='flex flex-col justify-center'>
                     <div className="w-5/12 mx-auto p-4 border ">
                         <div className="topic-header border-b-2">
@@ -446,7 +443,6 @@ function Topic(props) {
                     </Modal>
                 </div>
             </TopicStyleWrapper>
-
         );
     }
     return (

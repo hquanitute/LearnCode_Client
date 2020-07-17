@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
 import LearnPage from '../LearnPage';
 import ChallengesPage from '../LearnPage/lsChallenge'
-import { Link, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import {Row, Col, Avatar} from 'antd';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {Avatar, Layout} from 'antd';
 
 import '../../style/css/navbar.css';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Challenge from '../LearnPage/challenge';
 import UserProfile from '../User'
-import { getUpdateCourseAction } from '../../actions/coursesAction';
+import {getUpdateCourseAction} from '../../actions/coursesAction';
 import VerifyLogin from '../Login/verifyLogin';
 import Forum from '../Forum';
 import Topic from '../Forum/topic';

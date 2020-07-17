@@ -1,4 +1,5 @@
 import { callApiAsPromise, apiBaseUrl } from "../api";
+import {trackPromise} from "react-promise-tracker";
 
 export function setCourses(courses){
     return {
@@ -34,10 +35,10 @@ export function resetCourseSelectedAction(){
 export function getUpdateCourseAction(){
     const request = callApiAsPromise("GET", apiBaseUrl+"courses/getPublished", null, null)    
     return dispatch =>
-        request.then(response =>
+        trackPromise(request.then(response =>
             dispatch({
                 data: response.data.content,
                 type: "GET_UPDATE_COURSE"
             })
-        );
+        ));
 }
