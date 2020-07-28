@@ -8,10 +8,16 @@ function UserProfile(props) {
     const [isEditing, setIsEditing] = useState(false);
     const [userName, setUserName] = useState("");
     const [avatar, setAvatar] = useState("");
+    const [point, setPoint] = useState(0);
 
     useEffect(() => {
+        if(!props.userInfo.name){
+            return;
+        }
         setUserName(props.userInfo.name);
         setAvatar(props.userInfo.avater);
+        console.log(props.userInfo);
+        setPoint(props.userInfo.listChallengeIdPassed.length)
     }, [props.userInfo])
 
     const confirmUpdate = () => {
@@ -68,7 +74,23 @@ function UserProfile(props) {
                 <img className='h-32 w-32 md:h-32 md:w-32 rounded-full mx-auto mt-2' src={props.userInfo.avater} alt='user avatar' />
             </div>
         );
-    return (
+    const pointComponent = (
+    <div className="mb-2">You have finished: <b>{point}</b> { point > 1 ? 'challenges' : 'challenge'}</div>
+    )
+    
+    const notLogedInComponent = (
+        <div className='topic-bg'>
+            <Row className='pt-4'>
+                <Col span={12} offset={6}>
+                    <h1>You have not logged in</h1>
+                    <a className='btn-login'
+           href={process.env.REACT_APP_GOOGLE}> Login with Google </a>
+                </Col>
+            </Row>
+        </div>
+    )
+
+    return !props.userInfo.name ?  notLogedInComponent : (
         <div className='topic-bg'>
             <Row className='pt-4'>
                 <Col span={12} offset={6}>
@@ -80,8 +102,9 @@ function UserProfile(props) {
                         onClick={() => { setIsEditing(true) }}>Sign me out</button> */}
 
                     <input className="text-center font-bold text-2xl mb-2" readOnly={!isEditing} value={userName} onChange={(e) => setUserName(e.target.value)} />
-                    <div className="text-center text-white font-base text-base mb-2"> {props.userInfo.email}</div>
+                    <div className="text-center text-black font-base text-base mb-2"> {props.userInfo.email}</div>
                     {avatarComponent}
+                    {isEditing ? null : pointComponent}
                 </Col>
             </Row>
         </div>
