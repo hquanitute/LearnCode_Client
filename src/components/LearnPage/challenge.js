@@ -3,7 +3,15 @@ import { connect } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
 import { Layout, Modal, Button } from 'antd';
 import AceEditor from "react-ace";
+
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/mode-python";
+
+import "ace-builds/src-noconflict/snippets/javascript";
+import "ace-builds/src-noconflict/snippets/java";
+import "ace-builds/src-noconflict/snippets/python";
+
 import "ace-builds/src-min-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-terminal";
@@ -195,6 +203,14 @@ function Challenge(props) {
         setCode(props.challengeSelected.contents)
         setTestInfo(" //Test will shown here")
     }
+    let mode ='javascript'
+    if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
+        mode = "javascript"
+    } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
+        mode = "java"
+    } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
+        mode = "python"
+    }
 
     return (
         <ChallengeStyleWrapper>
@@ -238,7 +254,7 @@ function Challenge(props) {
                                                propagateDimensions={true}
                                                flex={0.8}>
                                     <AceEditor
-                                        mode="javascript"
+                                        mode={mode}
                                         theme="terminal"
                                         name="aceeditorContainer"
                                         onChange={onChangeCode}
@@ -250,6 +266,7 @@ function Challenge(props) {
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,
+                                            enableSnippets: true,
                                             showLineNumbers: true,
                                             tabSize: 4,
                                         }} />
