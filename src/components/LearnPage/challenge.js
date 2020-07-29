@@ -3,7 +3,15 @@ import {connect} from 'react-redux';
 import {useParams, Link} from 'react-router-dom';
 import {Layout, Modal, Button} from 'antd';
 import AceEditor from "react-ace";
+
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/mode-python";
+
+import "ace-builds/src-noconflict/snippets/javascript";
+import "ace-builds/src-noconflict/snippets/java";
+import "ace-builds/src-noconflict/snippets/python";
+
 import "ace-builds/src-min-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-terminal";
@@ -139,15 +147,58 @@ function Challenge(props) {
         element.click();
         setModalVisible(false)
     };
+
+    const similarity = (s1, s2) => {
+        var longer = s1;
+        var shorter = s2;
+        if (s1.length < s2.length) {
+          longer = s2;
+          shorter = s1;
+        }
+        var longerLength = longer.length;
+        if (longerLength == 0) {
+          return 1.0;
+        }
+        return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+      }
+    
+    const editDistance = (s1, s2) => {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+      
+        var costs = new Array();
+        for (var i = 0; i <= s1.length; i++) {
+          var lastValue = i;
+          for (var j = 0; j <= s2.length; j++) {
+            if (i == 0)
+              costs[j] = j;
+            else {
+              if (j > 0) {
+                var newValue = costs[j - 1];
+                if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                  newValue = Math.min(Math.min(newValue, lastValue),
+                    costs[j]) + 1;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
+              }
+            }
+          }
+          if (i > 0)
+            costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+    }
+
     const submitCode = () => {
         let language = "";
         let codeSubmit = "";
         let codeTest = "";
+
         if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
             language = "NodejsTest"
-            codeSubmit = props.challengeSelected.tests + " " + code
+            codeSubmit = "const codeSubmit = ` "+ code.replace(/\n+/g, ' ') + " ` ; " +props.challengeSelected.tests + " " + code
         } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
-            language = "Java"
+            language = "JavaTest"
             codeSubmit = code;
             codeTest= props.challengeSelected.tests;
         } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
@@ -165,15 +216,14 @@ function Challenge(props) {
             }
         }
         trackPromise(callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
-            if (response.data.errorMessage.errorComplieMessage == null && response.data.successMessage.successComplieMessage === props.challengeSelected.runResult) {
-                console.log(response.data.successMessage.successComplieMessage);
-                setTestInfo(response.data.successMessage.successComplieMessage);
-                setResult(response.data.successMessage.testCasesResult);
-                if (props.userInfo._id) {
-                    const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;
-                    if (!listChallengeIdPassed.includes(challengeId)) {
-                        listChallengeIdPassed.push(challengeId);
-                        callApiAsPromise("put", apiBaseUrl + 'users/' + props.userInfo._id, null, JSON.stringify({'listChallengeIdPassed': listChallengeIdPassed}))
+            if (response.data.errorMessage.errorComplieMessage == null && similarity(response.data.successMessage.successComplieMessage , props.challengeSelected.runResult) > 0.975 ) {                
+                setTestInfo(response.data.successMessage.successComplieMessage)
+                console.log(similarity(response.data.successMessage.successComplieMessage , props.challengeSelected.runResult));
+                if (props.userInfo._id){
+                    const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;                    
+                    if (!listChallengeIdPassed.includes(challengeId)){
+                        listChallengeIdPassed.push(challengeId);                        
+                        callApiAsPromise("put", apiBaseUrl + 'users/'+props.userInfo._id, null, JSON.stringify({'listChallengeIdPassed':listChallengeIdPassed}))
                             .then((res) => {
                                 props.updateUserInfo(res.data.value);
                             })
@@ -192,6 +242,14 @@ function Challenge(props) {
     const resetCode = () => {
         setCode(props.challengeSelected.contents)
         setTestInfo(" //Test will shown here")
+    }
+    let mode ='javascript'
+    if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
+        mode = "javascript"
+    } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
+        mode = "java"
+    } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
+        mode = "python"
     }
 
     return (
@@ -237,7 +295,7 @@ function Challenge(props) {
                                                propagateDimensions={true}
                                                flex={0.8}>
                                     <AceEditor
-                                        mode="javascript"
+                                        mode={mode}
                                         theme="terminal"
                                         name="aceeditorContainer"
                                         onChange={onChangeCode}
@@ -249,6 +307,7 @@ function Challenge(props) {
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,
+                                            enableSnippets: true,
                                             showLineNumbers: true,
                                             tabSize: 4,
                                         }}/>
