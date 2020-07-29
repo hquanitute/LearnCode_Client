@@ -94,7 +94,7 @@ function TestCaseResul({result}) {
 
 
 function Challenge(props) {
-    let {challengeId} = useParams();
+    let {challengeId, courseId, lessonId} = useParams();
     const [code, setCode] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [listChallengeIds, setListChallengeIds] = useState([]);
@@ -331,7 +331,7 @@ function Challenge(props) {
                         listChallengeIds.indexOf(challengeId) < listChallengeIds.length - 1 ?
                             [
                                 <Link key="next"
-                                      to={`/learn/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]}
+                                      to={`/learn/` + courseId + `/lesson/` + lessonId + `/challenges/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]}
                                       onClick={() => goToNextChallenge()}>
                                     Go to next challenge
                                 </Link>,
@@ -340,7 +340,7 @@ function Challenge(props) {
                                 </Button>
                             ] :
                             [
-                                <Link key="next" to={`/learn/`}>
+                                <Link key="next" to={`/learn/` + courseId + `/lesson`}>
                                     Go back learning page
                                 </Link>,
                                 <Button key="Download" type="primary" onClick={() => downloadCode()}>
