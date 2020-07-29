@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { useParams, Link } from 'react-router-dom';
-import { Layout, Modal, Button } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {connect} from 'react-redux';
+import {useParams, Link} from 'react-router-dom';
+import {Layout, Modal, Button} from 'antd';
 import AceEditor from "react-ace";
 
 import "ace-builds/src-noconflict/mode-javascript";
@@ -22,18 +22,20 @@ import {
 } from 'react-reflex'
 import 'react-reflex/styles.css'
 
-import { setChallengeSelectedAction } from '../../actions/challengesAction';
-import { callApiAsPromise, apiBaseUrl } from '../../api';
+import {setChallengeSelectedAction} from '../../actions/challengesAction';
+import {callApiAsPromise, apiBaseUrl} from '../../api';
 import '../../style/css/learn.css';
-import { updateUser } from '../../actions/userAction';
+import {updateUser} from '../../actions/userAction';
 import styled from "styled-components";
 import {trackPromise, usePromiseTracker} from "react-promise-tracker";
 import ThreeDots from "../Loader/ThreeDots";
+import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
+
 
 const ReactMarkdown = require('react-markdown')
-const { Header, Content } = Layout;
+const {Header, Content} = Layout;
 
-const ChallengeStyleWrapper=styled.div`
+const ChallengeStyleWrapper = styled.div`
     padding:20px 0;
     background-color: #f0f2f5;
     .btn-bottom-action{
@@ -53,16 +55,52 @@ const ChallengeStyleWrapper=styled.div`
         border-radius: 5px;
         box-shadow: 0 6px 16px 0 rgba(0,0,0,.2);
     }
+    
+    .rightResult{
+        color:green;
+        font-weight:bold; 
+       
+    }
+    
+    .failResult{
+        color:red;
+        font-weight:bold;
+    }
+    
+    .testCaseResult{
+        display:flex;
+        justify-content: space-between;
+        box-shadow: 0 4px 12px 0 rgba(0,0,0,.15);
+        align-items: center;
+    }
+    
+    .testCaseResult .icon{
+        font-size:25px;
+        font-weight:bold;
+    }
 `
+
+function TestCaseResul({result}) {
+    return (
+        <div className="p-4 testCaseResult m-2">
+            <div dangerouslySetInnerHTML={{__html: result.code}}
+                 className={(result.isPassed ? "rightResult" : "failResult")}></div>
+            <div className={(result.isPassed && "text-green-600" || "text-red-600") + " icon"}> {result.isPassed &&
+            <CheckOutlined className="text-green-600"/> || <CloseOutlined className="text-red-600"/>}</div>
+        </div>
+
+    )
+}
 
 
 function Challenge(props) {
-    let { challengeId } = useParams();
+    let {challengeId} = useParams();
     const [code, setCode] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [listChallengeIds, setListChallengeIds] = useState([]);
     const [testInfo, setTestInfo] = useState("//Test will shown here");
-    const { promiseInProgress } = usePromiseTracker();
+    const [result, setResult] = useState([]);
+    const {promiseInProgress} = usePromiseTracker();
 
     useEffect(() => {
         props.setChallengeSelected(challengeId)
@@ -102,7 +140,7 @@ function Challenge(props) {
 
     const downloadCode = e => {
         const element = document.createElement("a");
-        const file = new Blob([code], { type: 'text/plain' });
+        const file = new Blob([code], {type: 'text/plain'});
         element.href = URL.createObjectURL(file);
         element.download = props.challengeSelected.title + '.txt';
         document.body.appendChild(element); // Required for this to work in FireFox
@@ -154,14 +192,15 @@ function Challenge(props) {
     const submitCode = () => {
         let language = "";
         let codeSubmit = "";
-        let testString = "";
+        let codeTest = "";
+
         if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
             language = "NodejsTest"
             codeSubmit = "const codeSubmit = ` "+ code.replace(/\n+/g, ' ') + " ` ; " +props.challengeSelected.tests + " " + code
         } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
-            language = "JavaTest";
-            testString = props.challengeSelected.tests;
-            codeSubmit = code
+            language = "JavaTest"
+            codeSubmit = code;
+            codeTest= props.challengeSelected.tests;
         } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
             language = "Python2";
             codeSubmit = code
@@ -173,7 +212,7 @@ function Challenge(props) {
             },
             "language": language,
             "test": {
-                "code": testString
+                "code": codeTest
             }
         }
         trackPromise(callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
@@ -195,7 +234,8 @@ function Challenge(props) {
             } else {
                 setTestInfo(response.data.successMessage.successComplieMessage +
                     '<br/> <br/>' +
-                    response.data.errorMessage.errorComplieMessage)
+                    response.data.errorMessage.errorComplieMessage);
+                setResult(response.data.testCasesResult);
             }
         }))
     }
@@ -219,17 +259,18 @@ function Challenge(props) {
                     <ReflexContainer orientation="vertical">
                         <ReflexElement className="left-pane">
                             <Layout className="m-2" id="layout-content">
-                                <Header className="font-Roboto font-bold" id="title">{props.challengeSelected.title}</Header>
+                                <Header className="font-Roboto font-bold"
+                                        id="title">{props.challengeSelected.title}</Header>
                                 <Content>
-                                    <ReactMarkdown source={props.challengeSelected.description} escapeHtml={false} />
+                                    <ReactMarkdown source={props.challengeSelected.description} escapeHtml={false}/>
                                 </Content>
                                 {/* <br/> */}
-                                {props.challengeSelected.instructions == "" ? "" : <hr />}
+                                {props.challengeSelected.instructions == "" ? "" : <hr/>}
                                 <ReactMarkdown source={props.challengeSelected.instructions} escapeHtml={false}
-                                               visible={props.challengeSelected.instructions == "" ? false : true} />
+                                               visible={props.challengeSelected.instructions == "" ? false : true}/>
                                 {/* <br/> */}
-                                <hr />
-                                <br />
+                                <hr/>
+                                <br/>
                                 <div className="grid grid-cols-3 gap-8">
                                     <button className="btn-bottom-action"
                                             onClick={() => submitCode()}>
@@ -240,13 +281,13 @@ function Challenge(props) {
                                         Reset all code
                                     </button>
                                     <Link className="btn-bottom-action"
-                                          to={`/forum/` + props.challengeSelected.forumTopicId } >
+                                          to={`/forum/` + props.challengeSelected.forumTopicId}>
                                         Go to Forum
                                     </Link>
                                 </div>
                             </Layout>
                         </ReflexElement>
-                        <ReflexSplitter />
+                        <ReflexSplitter/>
                         <ReflexElement className="right-pane">
                             <ReflexContainer orientation="horizontal">
                                 {/* <Layout id="layout-code"> */}
@@ -269,11 +310,12 @@ function Challenge(props) {
                                             enableSnippets: true,
                                             showLineNumbers: true,
                                             tabSize: 4,
-                                        }} />
+                                        }}/>
                                 </ReflexElement>
-                                <ReflexSplitter propagate={true} />
+                                <ReflexSplitter propagate={true}/>
                                 <ReflexElement className="bottom-pane overflow-y-scroll test-area">
-                                    {promiseInProgress&&<ThreeDots/>||<ReactMarkdown source={testInfo} escapeHtml={false} />}
+                                    {promiseInProgress && <ThreeDots/> || (result.map(item => <TestCaseResul
+                                        result={item}/>))}
                                 </ReflexElement>
                             </ReflexContainer>
                         </ReflexElement>
@@ -288,7 +330,9 @@ function Challenge(props) {
                     footer={
                         listChallengeIds.indexOf(challengeId) < listChallengeIds.length - 1 ?
                             [
-                                <Link key="next" to={`/learn/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]} onClick={() => goToNextChallenge()}>
+                                <Link key="next"
+                                      to={`/learn/` + listChallengeIds[listChallengeIds.indexOf(challengeId) + 1]}
+                                      onClick={() => goToNextChallenge()}>
                                     Go to next challenge
                                 </Link>,
                                 <Button key="Download" type="primary" onClick={() => downloadCode()}>
@@ -313,6 +357,7 @@ function Challenge(props) {
 
     );
 }
+
 const mapStateToProps = (state, ownProps) => {
     return {
         challengeSelected: state.challengeSelected,
