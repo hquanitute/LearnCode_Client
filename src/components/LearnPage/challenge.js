@@ -203,7 +203,7 @@ function Challenge(props) {
             codeTest= props.challengeSelected.tests;
         } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
             language = "Python2";
-            codeSubmit = code
+            codeSubmit = code;
         }
 
         let data = {
@@ -218,7 +218,6 @@ function Challenge(props) {
         trackPromise(callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
             if (response.data.errorMessage.errorComplieMessage == null && similarity(response.data.successMessage.successComplieMessage , props.challengeSelected.runResult) > 0.975 ) {                
                 setTestInfo(response.data.successMessage.successComplieMessage)
-                console.log(similarity(response.data.successMessage.successComplieMessage , props.challengeSelected.runResult));
                 if (props.userInfo._id){
                     const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;                    
                     if (!listChallengeIdPassed.includes(challengeId)){
@@ -235,8 +234,8 @@ function Challenge(props) {
                 setTestInfo(response.data.successMessage.successComplieMessage +
                     '<br/> <br/>' +
                     response.data.errorMessage.errorComplieMessage);
-                setResult(response.data.testCasesResult);
             }
+            setResult(response.data.testCasesResult);
         }))
     }
     const resetCode = () => {

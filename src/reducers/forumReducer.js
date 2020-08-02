@@ -3,8 +3,16 @@ let initlesson = [];
 const forumReducer = (state = initlesson, action) => {
     switch (action.type) {
         case "GET_FORUM":
-            state = action.data;
+            state={
+                ...state,
+                lsTopic:action.data
+            }
             break;
+        case  "GET_PAGEABLE":
+            state={
+                ...state,
+                pageable:action.data,
+            }
         default:
             break;
     }
