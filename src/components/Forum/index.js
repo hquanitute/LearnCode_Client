@@ -160,6 +160,8 @@ function Paging({criteria, onChangePageable}) {
 
 }
 
+
+
 function Forum(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [pageable, setPageable] = useState({current_page: 0, max_page: 0, total: 0})

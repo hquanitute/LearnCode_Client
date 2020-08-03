@@ -3,21 +3,22 @@ import LearnPage from '../LearnPage';
 import ChallengesPage from '../LearnPage/lsChallenge'
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import {Avatar, Layout} from 'antd';
-
 import '../../style/css/navbar.css';
 import {connect} from 'react-redux';
 import Challenge from '../LearnPage/challenge';
 import UserProfile from '../User'
 import {getUpdateCourseAction} from '../../actions/coursesAction';
+
 import VerifyLogin from '../Login/verifyLogin';
 import Forum from '../Forum';
 import Topic from '../Forum/topic';
 import Home from '../Home';
 import styled from "styled-components";
 import LessonPage from "../LearnPage/lesson";
+import footer_bg from "../../asset/img/footer-bg.jpg"
 
 
-const HeaderWrapper=styled.div`
+const HeaderWrapper = styled.div`
     background-color:#292929;
     color:#ece0c9;
     a{
@@ -41,7 +42,9 @@ const HeaderWrapper=styled.div`
     
 `
 
-const BodyStyleWrapper=styled.div`
+const {Header, Footer, Sider, Content} = Layout;
+
+const BodyStyleWrapper = styled.div`
     .btn-login{
         background-color: #d23434;
         padding: 10px 20px;
@@ -64,6 +67,70 @@ const BodyStyleWrapper=styled.div`
     
    
 `
+
+const FooterWrapperStyle = styled.div`
+    clear: both;
+    position:relative;
+    
+    .bg{
+        height: 200px;
+        background-image: url(${footer_bg});
+        position:absolute;
+        width:100%;
+        z-index:100;
+    }
+    
+    .content{
+    
+        display:flex;
+        z-index: 200;
+        height: 200px;
+        position:absolute;
+        width:100%;
+        background: #05080d;
+        opacity: 0.95;
+        color:#606976;
+    }
+    
+    
+    .block-footer{
+        height:100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .block-1{
+        
+    }
+    
+    .footer-slogan{
+        font-size:12px;
+    }
+    
+    .text-logo a{
+        font-weight:bold;
+        font-size:20px;
+        color:white;
+    }
+    
+    .block-2{
+    
+    }
+    
+    .block-2 a{
+        color:#606976;
+        padding:5px 0;
+        font-size:13px;
+    }
+    
+    .block-3 .phone p{
+        color:white;
+    }
+    
+    
+`
+
 function Main(props) {
     useEffect(() => {
         props.getCourses();
@@ -73,8 +140,8 @@ function Main(props) {
         <div>
             <Router>
                 <div className="content-center">
+                    <HeaderWrapper>
                         <nav>
-                            <HeaderWrapper>
                             <div className="p-0 font-bold flex flex-row items-center p-2">
                                 <div className="w-1/3 flex  flex-col justify-start">
                                     <div className="w-3/12 flex flex-col">
@@ -86,47 +153,85 @@ function Main(props) {
                                 </div>
                                 <div className="w-1/3 flex flex-row justify-center">
                                     <div className="p-2">
-                                        <Link className="font-normal nav-item " to="/forum"><span>Forum</span></Link>
+                                        <Link className="font-normal nav-item "
+                                              to="/forum"><span>Forum</span></Link>
                                     </div>
                                     <div className="p-2">
-                                        <Link className="font-normal nav-item " to="/learn"><span>Learn</span></Link>
+                                        <Link className="font-normal nav-item "
+                                              to="/learn"><span>Learn</span></Link>
                                     </div>
                                 </div>
                                 <div className="w-1/3 flex flex-row justify-end">
-                                    {props.userInfo._id&&
+                                    {props.userInfo._id &&
                                     <div className="p-2">
-                                        <Link className="font-normal nav-item " to="/user"><span className="mx-2">{(props.userInfo.name || " ").split(" ")[0] || ""}</span><Avatar  src={props.userInfo.avater} /></Link>
+                                        <Link className="font-normal nav-item " to="/user"><span
+                                            className="mx-2">{(props.userInfo.name || " ").split(" ")[0] || ""}</span><Avatar
+                                            src={props.userInfo.avater}/></Link>
                                     </div>}
                                 </div>
                             </div>
-                            </HeaderWrapper>
                         </nav>
+                    </HeaderWrapper>
+
                     <BodyStyleWrapper>
                         <Switch>
-                            <Route exact path="/" children={<Home />} />
-                            <Route exact path="/learn" children={<LearnPage />} />
-                            <Route exact path="/learn/:course/lesson" children={<LessonPage />} />
-                            <Route exact path="/learn/:courseId/lesson/:lessonId/challenges" children={<ChallengesPage />} />
-                            <Route path={`/learn/:courseId/lesson/:lessonId/challenges/:challengeId`} children={<Challenge />} />
-                            <Route exact path="/forum" children={<Forum />} />
-                            <Route path={`/forum/:topicId`} children={<Topic />} />
+                            <Route exact path="/" children={<Home/>}/>
+                            <Route exact path="/learn" children={<LearnPage/>}/>
+                            <Route exact path="/learn/:course/lesson" children={<LessonPage/>}/>
+                            <Route exact path="/learn/:courseId/lesson/:lessonId/challenges"
+                                   children={<ChallengesPage/>}/>
+                            <Route path={`/learn/:courseId/lesson/:lessonId/challenges/:challengeId`}
+                                   children={<Challenge/>}/>
+                            <Route exact path="/forum" children={<Forum/>}/>
+                            <Route path={`/forum/:topicId`} children={<Topic/>}/>
                             <Route path="/user">
-                                <UserProfile />
+                                <UserProfile/>
                             </Route>
                             <Route path="/verifyLogin">
-                                <VerifyLogin />
+                                <VerifyLogin/>
                             </Route>
                             <Route path="*">
-                                <Home />
+                                <Home/>
                             </Route>
                         </Switch>
                     </BodyStyleWrapper>
+
+                    <FooterWrapperStyle>
+                        <div className="bg">
+
+                        </div>
+                        <div className="content">
+                            <div className="w-4/12 block-footer block-1 ">
+                                <div className="footer-slogan">
+                                    <span>Learn to better</span>
+                                </div>
+                                <div className="text-logo">
+                                    <a>
+                                        It-UTE
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="w-4/12 block-footer block-2 ">
+                                <a>Lorem Ipsum is simply dummy text</a>
+                                <a>Lorem Ipsum is simply dummy text</a>
+                                <a>Lorem Ipsum is simply dummy text</a>
+                                <a>Lorem Ipsum is simply dummy text</a>
+                            </div>
+                            <div className="w-4/12 block-footer block-3 ">
+                                <div className="phone">
+                                    <p>(+84) 0832041753</p>
+                                    <p>(+84) 0832041753</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </FooterWrapperStyle>
                 </div>
             </Router>
-        </div >
+        </div>
     )
     return (
-         mainApp
+        mainApp
     );
 }
 
