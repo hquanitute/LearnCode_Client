@@ -16,10 +16,11 @@ import Home from '../Home';
 import styled from "styled-components";
 import LessonPage from "../LearnPage/lesson";
 import footer_bg from "../../asset/img/footer-bg.jpg"
+import {FacebookOutlined, GoogleOutlined, TwitterOutlined} from "@ant-design/icons";
 
 
 const HeaderWrapper = styled.div`
-    background-color:#292929;
+    background-color:#00132f;
     color:#ece0c9;
     a{
          color:#fff;
@@ -45,6 +46,7 @@ const HeaderWrapper = styled.div`
 const {Header, Footer, Sider, Content} = Layout;
 
 const BodyStyleWrapper = styled.div`
+    min-height:100vh;
     .btn-login{
         background-color: #d23434;
         padding: 10px 20px;
@@ -101,11 +103,13 @@ const FooterWrapperStyle = styled.div`
     }
     
     .block-1{
-        
+        padding: 0 10%;
+        text-align: start;
     }
     
     .footer-slogan{
         font-size:12px;
+       
     }
     
     .text-logo a{
@@ -120,12 +124,21 @@ const FooterWrapperStyle = styled.div`
     
     .block-2 a{
         color:#606976;
-        padding:5px 0;
+        padding:5px 25%;
         font-size:13px;
+        text-align: start;
     }
     
     .block-3 .phone p{
         color:white;
+    }
+    
+    .social .social-item{
+        font-size:25px;
+    }
+    
+    .social {
+        
     }
     
     
@@ -210,12 +223,23 @@ function Main(props) {
                                         It-UTE
                                     </a>
                                 </div>
+                                <div className="social">
+                                    <span className="social-item mr-2">
+                                        <FacebookOutlined/>
+                                    </span>
+                                    <span className="social-item mr-2">
+                                        <GoogleOutlined />
+                                    </span>
+                                    <span className="social-item mr-2">
+                                        <TwitterOutlined />
+                                    </span>
+                                </div>
                             </div>
                             <div className="w-4/12 block-footer block-2 ">
-                                <a>Lorem Ipsum is simply dummy text</a>
-                                <a>Lorem Ipsum is simply dummy text</a>
-                                <a>Lorem Ipsum is simply dummy text</a>
-                                <a>Lorem Ipsum is simply dummy text</a>
+                                <a>Learn Javascript Basic</a>
+                                <a>Learn Python Basic</a>
+                                <a>Discover Interview</a>
+                                <a>Practice learning Algorithms</a>
                             </div>
                             <div className="w-4/12 block-footer block-3 ">
                                 <div className="phone">
