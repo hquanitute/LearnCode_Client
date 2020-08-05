@@ -339,7 +339,7 @@ function Topic(props) {
                                         <ReactMarkdown height='200px' source={topic.content} escapeHtml={false} />
                                     </div>
                                     <div className='question-footer'>
-                                        <div hidden = { process.env.mode !== 'PRODUCTION'} className="fb-share-button" data-href={window.location.href} data-layout="button" data-size="large"><a target="_blank" href= {linkToShare} className="fb-xfbml-parse-ignore">Chia sẻ</a></div>
+                                        <div hidden = { process.env.REACT_APP_MODE !== 'PRODUCTION'} className="fb-share-button" data-href={window.location.href} data-layout="button" data-size="large"><a target="_blank" href= {linkToShare} className="fb-xfbml-parse-ignore">Chia sẻ</a></div>
                                         <button className='font-medium text-xl text-gray-500 hover:text-red-600 hover:bg-gray-500 p-2'
                                                 hidden={!isOwner}
                                                 onClick={() => { deleteTopic() }}
