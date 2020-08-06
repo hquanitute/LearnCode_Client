@@ -7,8 +7,9 @@ import {connect} from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import styled from "styled-components";
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker';
-import {ProfileOutlined, StarOutlined, UpOutlined, UserAddOutlined} from "@ant-design/icons";
+import {HeartOutlined, ProfileOutlined, StarOutlined, UpOutlined, UserAddOutlined} from "@ant-design/icons";
 import ThreeDots from "../Loader/ThreeDots";
+import {covertMillisecondToDate, DATE_FORMAT} from "../../util/dateUtils";
 
 const TopicStyleWrapper=styled.div`
         text-align:start;
@@ -257,10 +258,10 @@ function Topic(props) {
                 <div className="flex flex-col my-3 p-2 comment">
                     <div className="flex flex-row justify-between comment-header">
                             <div className="w-4/12 py-3">
-                                <span><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /><a href="#">Thanh Dat</a></span>
+                                <span><Avatar src={comment.userId.avater} /><a className="mx-2" href="#">{comment.userId.name}</a></span>
                             </div>
                             <div className="w-4/12 py-3 text-right">
-                                <span>Sep 25th, 2017 1:31 PM</span>
+                                <span>{covertMillisecondToDate(comment.timestamp, DATE_FORMAT)}</span>
                             </div>
                     </div>
                     <div className="comment-body">
@@ -268,7 +269,7 @@ function Topic(props) {
                     </div>
                     <div className="comment-footer flex flex-row">
                             <div className="comment-vote">
-                                <button className="mr-1 " onClick={()=>voteComment(comment._id)}><UpOutlined /></button>
+                                <button className="mr-1 " onClick={()=>voteComment(comment._id)}><HeartOutlined /></button>
                                 <span>{comment.likePeople.length}</span>
                             </div>
                             <div>
@@ -286,7 +287,7 @@ function Topic(props) {
         return (
             promiseInProgress&&<ThreeDots/>||<TopicStyleWrapper>
                 <div className='flex flex-col justify-center'>
-                    <div className="w-5/12 mx-auto p-4 border ">
+                    <div className="w-7 /12 mx-auto p-4 border ">
                         <div className="topic-header border-b-2">
                             <div className="topic-name ">
                                 <h1 >
