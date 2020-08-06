@@ -227,10 +227,10 @@ function Forum(props) {
     let listTopics = props.forum.lsTopic ? props.forum.lsTopic.map((topic) => (
         <div className='flex flex-row justify-start topic'>
             <div className="w-11/12 flex flex-row">
-                <Avatar className="avatar">U</Avatar>
+                <Avatar className="avatar" src={topic.userId.avater}/>
                 <div className="flex-col w-full">
                     <div className="info-topic">
-                        <a href="#" className="author-name mr-auto">Davis Dat</a>
+                        <a href="#" className="author-name mr-auto">{topic.userId.name}</a>
                         <span className="ml-auto">{covertMillisecondToDate(topic.timestamp, DATE_FORMAT)}</span>
                     </div>
                     <Link to={'/forum/' + topic._id} className="name-topic">
