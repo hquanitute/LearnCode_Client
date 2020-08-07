@@ -152,39 +152,39 @@ function Challenge(props) {
         var longer = s1;
         var shorter = s2;
         if (s1.length < s2.length) {
-          longer = s2;
-          shorter = s1;
+            longer = s2;
+            shorter = s1;
         }
         var longerLength = longer.length;
         if (longerLength == 0) {
-          return 1.0;
+            return 1.0;
         }
         return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
-      }
-    
+    }
+
     const editDistance = (s1, s2) => {
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
-      
+
         var costs = new Array();
         for (var i = 0; i <= s1.length; i++) {
-          var lastValue = i;
-          for (var j = 0; j <= s2.length; j++) {
-            if (i == 0)
-              costs[j] = j;
-            else {
-              if (j > 0) {
-                var newValue = costs[j - 1];
-                if (s1.charAt(i - 1) != s2.charAt(j - 1))
-                  newValue = Math.min(Math.min(newValue, lastValue),
-                    costs[j]) + 1;
-                costs[j - 1] = lastValue;
-                lastValue = newValue;
-              }
+            var lastValue = i;
+            for (var j = 0; j <= s2.length; j++) {
+                if (i == 0)
+                    costs[j] = j;
+                else {
+                    if (j > 0) {
+                        var newValue = costs[j - 1];
+                        if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                            newValue = Math.min(Math.min(newValue, lastValue),
+                                costs[j]) + 1;
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
             }
-          }
-          if (i > 0)
-            costs[s2.length] = lastValue;
+            if (i > 0)
+                costs[s2.length] = lastValue;
         }
         return costs[s2.length];
     }
@@ -196,14 +196,15 @@ function Challenge(props) {
 
         if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
             language = "NodejsTest"
-            codeSubmit = "const codeSubmit = ` "+ code.replace(/\n+/g, ' ') + " ` ; " +props.challengeSelected.tests + " " + code
+            codeSubmit = "const codeSubmit = ` " + code.replace(/\n+/g, ' ') + " ` ; " + props.challengeSelected.tests + " " + code
         } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
             language = "JavaTest"
             codeSubmit = code;
-            codeTest= props.challengeSelected.tests;
+            codeTest = props.challengeSelected.tests;
         } else if (props.challengeSelected.challengeType >= 200 && props.challengeSelected.challengeType < 300) {
             language = "Python2";
-            codeSubmit = code;
+            codeSubmit = code + "\n" + props.challengeSelected.tests;
+            ;
         }
 
         let data = {
@@ -216,13 +217,13 @@ function Challenge(props) {
             }
         }
         trackPromise(callApiAsPromise("post", process.env.REACT_APP_COMPILE_SERVER + "code", null, JSON.stringify(data)).then((response) => {
-            if (response.data.errorMessage.errorComplieMessage == null && similarity(response.data.successMessage.successComplieMessage , props.challengeSelected.runResult) > 0.975 ) {                
+            if (response.data.errorMessage.errorComplieMessage == null && similarity(response.data.successMessage.successComplieMessage, props.challengeSelected.runResult) > 0.975) {
                 setTestInfo(response.data.successMessage.successComplieMessage)
-                if (props.userInfo._id){
-                    const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;                    
-                    if (!listChallengeIdPassed.includes(challengeId)){
-                        listChallengeIdPassed.push(challengeId);                        
-                        callApiAsPromise("put", apiBaseUrl + 'users/'+props.userInfo._id, null, JSON.stringify({'listChallengeIdPassed':listChallengeIdPassed}))
+                if (props.userInfo._id) {
+                    const listChallengeIdPassed = props.userInfo.listChallengeIdPassed;
+                    if (!listChallengeIdPassed.includes(challengeId)) {
+                        listChallengeIdPassed.push(challengeId);
+                        callApiAsPromise("put", apiBaseUrl + 'users/' + props.userInfo._id, null, JSON.stringify({'listChallengeIdPassed': listChallengeIdPassed}))
                             .then((res) => {
                                 props.updateUserInfo(res.data.value);
                             })
@@ -242,7 +243,7 @@ function Challenge(props) {
         setCode(props.challengeSelected.contents)
         setTestInfo(" //Test will shown here")
     }
-    let mode ='javascript'
+    let mode = 'javascript'
     if (props.challengeSelected.challengeType > -1 && props.challengeSelected.challengeType < 100) {
         mode = "javascript"
     } else if (props.challengeSelected.challengeType >= 100 && props.challengeSelected.challengeType < 200) {
