@@ -1,18 +1,12 @@
-import { callApiAsPromise, apiBaseUrl } from "../api";
-import { trackPromise  } from 'react-promise-tracker';
+import {callApiAsPromise, apiBaseUrl} from "../api";
+import {trackPromise} from 'react-promise-tracker';
 
-export function getForumAction(option){
-    let limit = 5;
-    let queryTags = '';
-    let skip=option.skip&&option.skip||'';
-    if (option.tags) {
-        let splitTags= option.tags.split(' ');
-        queryTags = splitTags.join('~').toLowerCase();
-    }
-    
-    const request = callApiAsPromise("GET", apiBaseUrl + '/topics?limit='+limit+'&tags='+queryTags+'&skip='+skip, null, null )
+export const CHANGE_CRITERIA = "CHANGE_CRITERIA";
+
+export function getForumAction(criteria) {
+    const request = callApiAsPromise("GET", apiBaseUrl + '/topics', criteria)
     return dispatch =>
-        trackPromise(request.then(response =>{
+        trackPromise(request.then(response => {
                 dispatch({
                     data: response.data.content,
                     type: "GET_FORUM"
@@ -21,7 +15,14 @@ export function getForumAction(option){
                     data: response.data.pagination,
                     type: "GET_PAGEABLE"
                 });
-        }
+            }
         ));
+}
+
+export function changeCriteria(criteria) {
+    return {
+        type: CHANGE_CRITERIA,
+        data: criteria
+    }
 }
 

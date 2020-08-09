@@ -1,13 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 
 import styled from "styled-components";
 import {setChallengeSelectedAction} from "../../actions/challengesAction";
-import {Link,useRouteMatch} from "react-router-dom";
+import {Link, useHistory, useRouteMatch} from "react-router-dom";
 
 
 const ChallengePageWrapper = styled.div`
-
     .challenge-row{
         display: flex;
         box-sizing: border-box;
@@ -52,12 +51,12 @@ const ChallengePageWrapper = styled.div`
 
 function ChallengesPage(props) {
 
-    let {match, path, url } = useRouteMatch();
+    let {match, path, url} = useRouteMatch();
 
-    useEffect(()=>{
-        if(!props.challengeSelected.challenges){
+    let [lsChallenge, setLsChallenge] = useState([]);
 
-        }
+    useEffect(() => {
+        (props.lsChallengeResult && setLsChallenge(props.lsChallengeResult)) || (props.challengeSelected && setLsChallenge(props.challengeSelected.challenges));
     })
 
     return (
@@ -65,9 +64,10 @@ function ChallengesPage(props) {
             <div className=' grid md:grid-cols-12 sm:grid-cols-1'>
                 <div className='md:col-span-8 md:col-start-3'>
                     <div className="flex flex-col justify-center">
-                        {(props.challengeSelected.challenges || []).map((challenge, indexLesson) => (
-                            <Link to={`${url}/` + challenge._id} onClick={()=>props.setChallengeSelected(challenge._id)}>
-                                <div className="box w-9/12 mx-auto" >
+                        {(lsChallenge || []).map((challenge, indexLesson) => (
+                            <Link to={`${url}/` + challenge._id}
+                                  onClick={() => props.setChallengeSelected(challenge._id)}>
+                                <div className="box w-9/12 mx-auto">
                                     <div className="challenge-row ">
                                         <div className="flex flex-col">
                                             <h3>{challenge.title}</h3>
@@ -76,11 +76,11 @@ function ChallengesPage(props) {
                                                 <small>Time:30</small>
                                             </div>
                                         </div>
-                                        {props.userInfo.listChallengeIdPassed && props.userInfo.listChallengeIdPassed.includes(challenge._id)&&(
+                                        {props.userInfo.listChallengeIdPassed && props.userInfo.listChallengeIdPassed.includes(challenge._id) && (
                                             <button className="btn-solve solved">
                                                 Solved
                                             </button>
-                                        )||( <button className="btn-solve">
+                                        ) || (<button className="btn-solve">
                                             Solve Challenge
                                         </button>)}
                                     </div>
@@ -102,7 +102,7 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
-    return{
+    return {
         setChallengeSelected: (idChallenge) => {
             dispatch(setChallengeSelectedAction(idChallenge))
         }

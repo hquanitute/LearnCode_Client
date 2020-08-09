@@ -9,12 +9,10 @@ function useQuery() {
 
 function VerifyLogin(props) {
     let query = useQuery();
-    console.log(query);
-    
+
     useEffect(() => {
         // var query = queryString.parse(props.location.search);
         if (query.get("token")) {
-            console.log(query.get("token"));
             
           window.localStorage.setItem("jwt", query.get("token"));
           props.setUserByToken(query.get("token"));

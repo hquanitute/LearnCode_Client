@@ -3,7 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import {connect} from 'react-redux';
 import {Avatar, Dropdown, Menu, message, Modal} from 'antd';
 import {CommentOutlined, EyeOutlined, PushpinOutlined} from '@ant-design/icons';
-import {getForumAction} from '../../actions/forumAction';
+import {changeCriteria, getForumAction} from '../../actions/forumAction';
 import {Link} from 'react-router-dom';
 import banner_img from "../../asset/img/learn.png"
 // const ReactMarkdown = require('react-markdown')
@@ -145,7 +145,7 @@ function Paging({criteria, onChangePageable}) {
     if (criteria) {
         for (let index = 0; index < criteria.max_page; index++) {
             numberPaging.push(<div>
-                {<div className={index+1 === criteria.current_page && "page-item active" || "page-item"}
+                {<div className={index + 1 === criteria.current_page && "page-item active" || "page-item"}
                       onClick={(e) => onChangePageable({...criteria, current_page: index})}>{index + 1}</div>}
             </div>);
 
@@ -161,10 +161,8 @@ function Paging({criteria, onChangePageable}) {
 }
 
 
-
 function Forum(props) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [pageable, setPageable] = useState({current_page: 0, max_page: 0, total: 0})
     const [contentNewTopic, setContentNewTopic] = useState('');
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState('general')
@@ -172,16 +170,15 @@ function Forum(props) {
     const {promiseInProgress} = usePromiseTracker();
 
     useEffect(() => {
-        props.getForum({limit: 5, tags: ''})
-    }, [])
-
-    useEffect(() => {
-        console.log(props.forum);
-        setPageable(props.forum.pageable);
-    }, [props.forum])
+        props.getForum(props.forum.criteria);
+    }, [props.forum.criteria])
 
     const chooseCategory = (name) => {
-        props.getForum({limit: 5, tags: name})
+        props.changeCriteria({...props.forum.criteria, tags: name, skip: ""})
+    }
+
+    const onChangePageable = (pageable) => {
+        props.changeCriteria({...props.forum.criteria, skip: pageable.current_page * 5});
     }
 
     const showModal = () => {
@@ -190,10 +187,6 @@ function Forum(props) {
     const hideModal = e => {
         setModalVisible(false)
     };
-
-    const onChangePageable = (pageable) => {
-        props.getForum({limit: 5, skip: pageable.current_page * 5});
-    }
 
     const createTopic = () => {
         if (!props.user._id) {
@@ -329,8 +322,7 @@ function Forum(props) {
                 <br/>
                 <div className='justify-center w-1/2 text-left text-lg  p-2 m-auto'>
                     {promiseInProgress && <ThreeDots/> || listTopics}
-                    <Paging criteria={pageable} onChangePageable={onChangePageable}/>
-
+                    <Paging criteria={props.forum.pageable} onChangePageable={onChangePageable}/>
                 </div>
                 <Modal
                     className='modal-new-topic'
@@ -410,8 +402,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        getForum: (option) => {
-            dispatch(getForumAction(option))
+        getForum: (criteria) => {
+            dispatch(getForumAction(criteria))
+        },
+        changeCriteria: (criteria) => {
+            dispatch(changeCriteria(criteria))
         }
     }
 }

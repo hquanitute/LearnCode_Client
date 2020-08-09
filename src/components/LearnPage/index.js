@@ -1,4 +1,4 @@
-import {Collapse, Row} from 'antd';
+import {Button, Collapse} from 'antd';
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link, useRouteMatch} from 'react-router-dom';
@@ -8,6 +8,8 @@ import {setChallengeSelectedAction, setLessons} from './../../actions/challenges
 import styled from "styled-components";
 import {usePromiseTracker} from "react-promise-tracker";
 import ThreeDots from "../Loader/ThreeDots";
+import Search from "antd/lib/input/Search";
+import {DownloadOutlined} from "@ant-design/icons";
 
 const quotes = require('../../api/quotes.json');
 
@@ -69,6 +71,8 @@ const LearnPageWrapper = styled.div`
         font-weight:bold;
     }
     
+   
+    
     
 `
 
@@ -103,7 +107,7 @@ function LearnPage(props) {
 
     const listPractice =
         <>
-            <div className="flex flex-row">
+            <div className="flex flex-row justify-center">
                 {
                     (props.courses || []).map((course, index) => (
                         <Link className="course w-3/12 " to={`${url}/${course._id}/lesson`}
@@ -116,13 +120,13 @@ function LearnPage(props) {
             </div>
         </>
 
-
     return (
         <LearnPageWrapper>
             <div className='topic-bg grid md:grid-cols-12 sm:grid-cols-1'>
                 <div className='md:col-span-8 md:col-start-3'>
                     {welcomeComponent}
                     {quotesComponents}
+
                     {promiseInProgress&&<ThreeDots/>||listPractice}
                 </div>
             </div>
@@ -144,6 +148,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         setLessons: (lsLession) => {
             dispatch(setLessons(lsLession))
+        },
+        searchChallenge:(criteria)=>{
+            dispatch()
         }
     }
 }

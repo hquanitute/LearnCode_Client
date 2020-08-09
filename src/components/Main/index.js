@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import LearnPage from '../LearnPage';
 import ChallengesPage from '../LearnPage/lsChallenge'
-import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch, withRouter} from 'react-router-dom';
+import {useHistory} from "react-router";
 import {Avatar, Layout} from 'antd';
 import '../../style/css/navbar.css';
 import {connect} from 'react-redux';
@@ -17,6 +18,9 @@ import styled from "styled-components";
 import LessonPage from "../LearnPage/lesson";
 import footer_bg from "../../asset/img/footer-bg.jpg"
 import {FacebookOutlined, GoogleOutlined, TwitterOutlined} from "@ant-design/icons";
+import SearchPage from "../LearnPage/SearchPage";
+import Search from "antd/lib/input/Search";
+import {changeSearchCriteria, doSearch} from "../../actions/searchAction";
 
 
 const HeaderWrapper = styled.div`
@@ -41,6 +45,17 @@ const HeaderWrapper = styled.div`
         font-size:10px;
     }
     
+    .search-btn{
+        width:75%;
+    }
+    
+    .search-btn button{
+        background-color: white;
+        outline: none;
+        border:none;
+        color: black;
+    }
+    
 `
 
 const {Header, Footer, Sider, Content} = Layout;
@@ -56,7 +71,7 @@ const BodyStyleWrapper = styled.div`
     }
     
     .btn-get-started{
-        background-color: #34d26a;
+        background-color:   #2a633d;
         padding: 10px 20px;
         border-radius: 5px;
         font-weight: bold;
@@ -141,13 +156,22 @@ const FooterWrapperStyle = styled.div`
         
     }
     
+   
+    
     
 `
 
 function Main(props) {
+    let history = useHistory();
+
     useEffect(() => {
         props.getCourses();
-    }, [])
+    }, []);
+
+    function handleSearch(val) {
+        props.changeSearchCriteria({...props.search.criteria, key: val});
+
+    }
 
     const mainApp = (
         <div>
@@ -175,6 +199,12 @@ function Main(props) {
                                     </div>
                                 </div>
                                 <div className="w-1/3 flex flex-row justify-end">
+                                    <Link to="/learn/search">
+                                        <Search placeholder="Search " onSearch={value => handleSearch(value)}
+                                                enterButton
+                                                className="search-btn p-2"/>
+                                    </Link>
+
                                     {props.userInfo._id &&
                                     <div className="p-2">
                                         <Link className="font-normal nav-item " to="/user"><span
@@ -195,6 +225,10 @@ function Main(props) {
                                    children={<ChallengesPage/>}/>
                             <Route path={`/learn/:courseId/lesson/:lessonId/challenges/:challengeId`}
                                    children={<Challenge/>}/>
+                            <Route path={`/learn/search/:challengeId`}
+                                   children={<Challenge/>}/>
+                            <Route path={`/learn/search`}
+                                   children={<SearchPage/>}/>
                             <Route exact path="/forum" children={<Forum/>}/>
                             <Route path={`/forum/:topicId`} children={<Topic/>}/>
                             <Route path="/user">
@@ -228,10 +262,10 @@ function Main(props) {
                                         <FacebookOutlined/>
                                     </span>
                                     <span className="social-item mr-2">
-                                        <GoogleOutlined />
+                                        <GoogleOutlined/>
                                     </span>
                                     <span className="social-item mr-2">
-                                        <TwitterOutlined />
+                                        <TwitterOutlined/>
                                     </span>
                                 </div>
                             </div>
@@ -262,13 +296,20 @@ function Main(props) {
 const mapStateToProps = (state, ownProps) => {
     return {
         challengeSelected: state.challengeSelected,
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
+        search: state.search
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         getCourses: () => {
             dispatch(getUpdateCourseAction())
+        },
+        doSearch: (criteria) => {
+            dispatch(doSearch(criteria))
+        },
+        changeSearchCriteria: (criteria) => {
+            dispatch(changeSearchCriteria(criteria))
         }
     }
 }
