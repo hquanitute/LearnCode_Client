@@ -62,7 +62,7 @@ function ChallengesPage(props) {
     return (
         <ChallengePageWrapper>
             <div className=' grid md:grid-cols-12 sm:grid-cols-1'>
-                <div className='md:col-span-8 md:col-start-3'>
+                <div className='md:col-span-8 md:col-start-3 m-4'>
                     <div className="flex flex-col justify-center">
                         {(lsChallenge || []).map((challenge, indexLesson) => (
                             <Link to={`${url}/` + challenge._id}

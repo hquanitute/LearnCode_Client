@@ -1,11 +1,6 @@
-import React, {useEffect} from 'react';
-import {Avatar} from "antd";
-import {covertMillisecondToDate, DATE_FORMAT} from "../../util/dateUtils";
-import {Link, useRouteMatch} from "react-router-dom";
-import {CommentOutlined, EyeOutlined, PushpinOutlined} from "@ant-design/icons";
+import React from 'react';
+import {Link} from "react-router-dom";
 import styled from "styled-components";
-import {setChallengeSelectedAction} from "../../actions/challengesAction";
-import {connect} from "react-redux";
 
 const ChallengePageWrapper = styled.div`
     .challenge-row{
