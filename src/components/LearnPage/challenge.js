@@ -135,6 +135,7 @@ function Challenge(props) {
     }
     const goToNextChallenge = e => {
         props.setChallengeSelected(listChallengeIds[listChallengeIds.indexOf(challengeId) + 1])
+        setResult([]);
         setModalVisible(false)
     };
 
@@ -230,13 +231,14 @@ function Challenge(props) {
                             .catch(console.log())
                     }
                 }
+                setResult(response.data.testCasesResult);
                 showModal()
+            } else if(response.data.testCasesResult.length > 0) {
+                setResult(response.data.testCasesResult);
             } else {
-                setTestInfo(response.data.successMessage.successComplieMessage +
-                    '<br/> <br/>' +
-                    response.data.errorMessage.errorComplieMessage);
+                setResult([{'code':response.data.errorMessage.errorComplieMessage,'isPassed':false}]);
             }
-            setResult(response.data.testCasesResult);
+            
         }))
     }
     const resetCode = () => {
